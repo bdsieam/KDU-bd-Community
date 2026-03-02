@@ -85,6 +85,14 @@ async function ensureDb() {
         )
       `);
 
+      // 5. Visitors Table
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS visitors (
+          visit_date DATE PRIMARY KEY,
+          count INT DEFAULT 0
+        )
+      `);
+
       // Seed Categories
       const categories = [
         ["Visa Information", "visa", "FileText", "D2, D10, extension process, and documents"],
@@ -143,6 +151,25 @@ app.get("/api/notices", async (req, res) => {
     res.json(rows);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch notices" });
+  }
+});
+
+app.get("/api/visitors/today", async (req, res) => {
+  await ensureDb();
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    // Upsert: increment count for today
+    await pool.query(`
+      INSERT INTO visitors (visit_date, count) 
+      VALUES (?, 1) 
+      ON DUPLICATE KEY UPDATE count = count + 1
+    `, [today]);
+
+    const [rows] = await pool.query("SELECT count FROM visitors WHERE visit_date = ?", [today]);
+    res.json({ count: (rows as any)[0]?.count || 0 });
+  } catch (error: any) {
+    console.error("Visitor tracking error:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 

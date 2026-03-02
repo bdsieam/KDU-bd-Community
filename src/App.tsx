@@ -5,7 +5,7 @@ import {
   Beef, Clock, Smartphone, Bus, GraduationCap, PhoneCall, 
   Search, Plus, LogIn, LayoutDashboard, Check, X, Trash2, Edit2,
   ChevronRight, ArrowLeft, Menu, Bell, Info, Send,
-  Home, User, Settings, Mail, Calendar, Camera, Music, Video, Image, Map, 
+  Home, User, Users, Settings, Mail, Calendar, Camera, Music, Video, Image, Map, 
   Book, Coffee, ShoppingBag, Heart, Star, Shield, Zap, Globe, Cloud, 
   Moon, Sun, Umbrella, Anchor, Award, Bike, Car, Plane, Train, 
   Truck, Activity, AlertCircle, AlertTriangle, Archive, AtSign, BarChart, 
@@ -1749,8 +1749,10 @@ const AdminDashboard = () => {
 
 export default function App() {
   const [pendingCount, setPendingCount] = useState(0);
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
 
   useEffect(() => {
+    // Fetch pending posts count for admin
     const token = localStorage.getItem('adminToken');
     if (token) {
       fetch('/api/admin/analytics', {
@@ -1760,6 +1762,12 @@ export default function App() {
       .then(data => setPendingCount(data.pendingPosts))
       .catch(() => {});
     }
+
+    // Fetch and track visitor count
+    fetch('/api/visitors/today')
+      .then(res => res.json())
+      .then(data => setVisitorCount(data.count))
+      .catch(() => {});
   }, []);
 
   return (
@@ -1788,7 +1796,15 @@ export default function App() {
                 <Link to="/add" className="hover:text-emerald-600 transition-colors">Add Info</Link>
                 <Link to="/login" className="hover:text-emerald-600 transition-colors">Admin</Link>
               </div>
-              <p className="text-sm text-zinc-400">© 2024 KDU Bangladeshi Community. Built for students.</p>
+              <div className="flex flex-col items-center md:items-end space-y-2">
+                {visitorCount !== null && (
+                  <div className="flex items-center space-x-2 text-xs font-medium text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+                    <Users className="w-3 h-3" />
+                    <span>{visitorCount} Visitors Today</span>
+                  </div>
+                )}
+                <p className="text-sm text-zinc-400">© 2026 KDU Bangladeshi Community. Built for students.</p>
+              </div>
             </div>
           </div>
         </footer>
