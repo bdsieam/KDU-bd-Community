@@ -46,7 +46,7 @@ async function initializeDatabase() {
         id INT PRIMARY KEY AUTO_INCREMENT,
         category_id INT,
         title VARCHAR(255) NOT NULL,
-        description TEXT,
+        description LONGTEXT,
         location VARCHAR(255),
         contact VARCHAR(255),
         image_url TEXT,
@@ -55,16 +55,29 @@ async function initializeDatabase() {
         submitted_by VARCHAR(255),
         email VARCHAR(255),
         status VARCHAR(50) DEFAULT 'pending',
+        views INT DEFAULT 0,
+        likes INT DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_category_status (category_id, status),
+        INDEX idx_status_created (status, created_at),
         FOREIGN KEY (category_id) REFERENCES categories (id)
       )
     `);
 
-    // Ensure pdf_url column exists (for existing databases)
-    try {
-      await pool.query("ALTER TABLE posts ADD COLUMN pdf_url TEXT");
-    } catch (e) {
-      // Column might already exist
+    // Migrations for existing tables
+    const migrations = [
+      "ALTER TABLE posts MODIFY COLUMN description LONGTEXT",
+      "ALTER TABLE posts ADD COLUMN IF NOT EXISTS views INT DEFAULT 0",
+      "ALTER TABLE posts ADD COLUMN IF NOT EXISTS likes INT DEFAULT 0",
+      "ALTER TABLE posts ADD COLUMN IF NOT EXISTS pdf_url TEXT"
+    ];
+
+    for (const sql of migrations) {
+      try {
+        await pool.query(sql);
+      } catch (e) {
+        // Ignore errors if column already exists or other migration issues
+      }
     }
 
     // 3. Admins & Moderators Table
@@ -85,7 +98,22 @@ async function initializeDatabase() {
         content TEXT NOT NULL,
         type VARCHAR(50) DEFAULT 'info',
         active TINYINT(1) DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_active_created (active, created_at)
+      )
+    `);
+
+    // 5. Comments Table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS comments (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        post_id INT NOT NULL,
+        author_name VARCHAR(255) NOT NULL,
+        content TEXT NOT NULL,
+        status VARCHAR(50) DEFAULT 'approved',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_post_id (post_id),
+        FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE
       )
     `);
 
@@ -286,6 +314,59 @@ async function startServer() {
     }
   });
 
+  // Public: Get Single Post (and increment views)
+  app.get("/api/posts/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+      await pool.query("UPDATE posts SET views = views + 1 WHERE id = ?", [id]);
+      const [rows] = await pool.query(`
+        SELECT p.*, c.name as category_name 
+        FROM posts p 
+        JOIN categories c ON p.category_id = c.id 
+        WHERE p.id = ?
+      `, [id]);
+      const post = (rows as any)[0];
+      if (!post) return res.status(404).json({ error: "Post not found" });
+      res.json(post);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch post" });
+    }
+  });
+
+  // Public: Like Post
+  app.post("/api/posts/:id/like", async (req, res) => {
+    const { id } = req.params;
+    try {
+      await pool.query("UPDATE posts SET likes = likes + 1 WHERE id = ?", [id]);
+      res.json({ message: "Post liked" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to like post" });
+    }
+  });
+
+  // Public: Get Comments for Post
+  app.get("/api/posts/:id/comments", async (req, res) => {
+    const { id } = req.params;
+    try {
+      const [rows] = await pool.query("SELECT * FROM comments WHERE post_id = ? AND status = 'approved' ORDER BY created_at DESC", [id]);
+      res.json(rows);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch comments" });
+    }
+  });
+
+  // Public: Add Comment
+  app.post("/api/posts/:id/comments", async (req, res) => {
+    const { id } = req.params;
+    const { author_name, content } = req.body;
+    try {
+      await pool.query("INSERT INTO comments (post_id, author_name, content) VALUES (?, ?, ?)", [id, author_name, content]);
+      res.status(201).json({ message: "Comment added" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to add comment" });
+    }
+  });
+
   // Admin: Login
   app.post("/api/admin/login", async (req, res) => {
     const { username, password } = req.body;
@@ -482,6 +563,44 @@ async function startServer() {
       res.json({ message: "Category deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete category." });
+    }
+  });
+
+  // Admin: Get All Comments
+  app.get("/api/admin/comments", authenticateToken, async (req, res) => {
+    try {
+      const [rows] = await pool.query(`
+        SELECT c.*, p.title as post_title 
+        FROM comments c 
+        JOIN posts p ON c.post_id = p.id 
+        ORDER BY c.created_at DESC
+      `);
+      res.json(rows);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch comments" });
+    }
+  });
+
+  // Admin: Update Comment Status
+  app.patch("/api/admin/comments/:id", authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    try {
+      await pool.query("UPDATE comments SET status = ? WHERE id = ?", [status, id]);
+      res.json({ message: "Comment updated successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update comment" });
+    }
+  });
+
+  // Admin: Delete Comment
+  app.delete("/api/admin/comments/:id", authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+      await pool.query("DELETE FROM comments WHERE id = ?", [id]);
+      res.json({ message: "Comment deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete comment" });
     }
   });
 
