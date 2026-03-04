@@ -2,6 +2,8 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import mysql from "mysql2/promise";
 import path from "path";
+import fs from "fs";
+import multer from "multer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -48,6 +50,7 @@ async function initializeDatabase() {
         location VARCHAR(255),
         contact VARCHAR(255),
         image_url TEXT,
+        pdf_url TEXT,
         map_link TEXT,
         submitted_by VARCHAR(255),
         email VARCHAR(255),
@@ -56,6 +59,13 @@ async function initializeDatabase() {
         FOREIGN KEY (category_id) REFERENCES categories (id)
       )
     `);
+
+    // Ensure pdf_url column exists (for existing databases)
+    try {
+      await pool.query("ALTER TABLE posts ADD COLUMN pdf_url TEXT");
+    } catch (e) {
+      // Column might already exist
+    }
 
     // 3. Admins & Moderators Table
     await pool.query(`
@@ -169,7 +179,50 @@ async function startServer() {
   const app = express();
   app.use(express.json());
 
+  // Ensure uploads directory exists
+  const uploadsDir = path.join(process.cwd(), "public", "uploads");
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+
+  // Multer Configuration for File Uploads
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+      cb(null, uniqueSuffix + path.extname(file.originalname));
+    },
+  });
+
+  const upload = multer({
+    storage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    fileFilter: (req, file, cb) => {
+      const allowedTypes = [".pdf", ".jpg", ".jpeg", ".png", ".webp"];
+      const ext = path.extname(file.originalname).toLowerCase();
+      if (allowedTypes.includes(ext)) {
+        cb(null, true);
+      } else {
+        cb(new Error("Only PDF and image files are allowed"));
+      }
+    },
+  });
+
+  // Serve static files from public/uploads
+  app.use("/uploads", express.static(uploadsDir));
+
   // --- API Routes ---
+
+  // File Upload Endpoint
+  app.post("/api/upload", upload.single("file"), (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    const fileUrl = `/uploads/${req.file.filename}`;
+    res.json({ url: fileUrl });
+  });
 
   // Public: Get Categories
   app.get("/api/categories", async (req, res) => {
@@ -210,12 +263,12 @@ async function startServer() {
 
   // Public: Submit Post
   app.post("/api/posts", async (req, res) => {
-    const { category_id, title, description, location, contact, image_url, map_link, submitted_by, email } = req.body;
+    const { category_id, title, description, location, contact, image_url, pdf_url, map_link, submitted_by, email } = req.body;
     try {
       await pool.query(`
-        INSERT INTO posts (category_id, title, description, location, contact, image_url, map_link, submitted_by, email)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [category_id, title, description, location, contact, image_url, map_link, submitted_by, email]);
+        INSERT INTO posts (category_id, title, description, location, contact, image_url, pdf_url, map_link, submitted_by, email)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [category_id, title, description, location, contact, image_url, pdf_url, map_link, submitted_by, email]);
       res.status(201).json({ message: "Submission successful. Under review." });
     } catch (error) {
       res.status(500).json({ error: "Failed to submit information." });

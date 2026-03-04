@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { 
   Briefcase, CreditCard, Stethoscope, MapPin, Utensils, 
@@ -22,14 +22,22 @@ import {
   Tablet, Tag, Target, Terminal, Thermometer, ThumbsDown, ThumbsUp, 
   ToggleLeft, ToggleRight, Trash, TrendingDown, TrendingUp, Tv, Twitter, 
   Type, Unlock, Upload, VideoOff, Volume, Watch, Wifi, Wind, Youtube,
+  Bold, Italic, Underline as UnderlineIcon, List as ListIcon, ListOrdered, Quote, Heading1, Heading2, AlignLeft, AlignCenter, AlignRight,
+  Bold as BoldIcon, Italic as ItalicIcon, Strikethrough,
   Smile, Frown, Meh, Ghost, Crown, Gem, Flame, Rocket, Hammer, Wrench
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useForm, Controller } from 'react-hook-form';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import ReactQuill from 'react-quill-new';
 import DOMPurify from 'dompurify';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import ImageExtension from '@tiptap/extension-image';
+import LinkExtension from '@tiptap/extension-link';
+import Placeholder from '@tiptap/extension-placeholder';
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -53,6 +61,7 @@ interface Post {
   location: string;
   contact: string;
   image_url: string;
+  pdf_url?: string;
   map_link: string;
   submitted_by?: string;
   email?: string;
@@ -69,6 +78,201 @@ interface Notice {
 }
 
 // --- Components ---
+
+const RichTextEditor = ({ value, onChange, placeholder }: { value: string, onChange: (val: string) => void, placeholder?: string }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      LinkExtension.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: 'text-emerald-600 underline cursor-pointer',
+        },
+      }),
+      ImageExtension.configure({
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'rounded-xl max-w-full h-auto cursor-pointer hover:ring-2 hover:ring-emerald-500 transition-all',
+        },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      Placeholder.configure({
+        placeholder: placeholder || 'Write something...',
+      }),
+    ],
+    content: value,
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML());
+    },
+  });
+
+  if (!editor) return null;
+
+  const addImage = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.url) {
+        editor.chain().focus().setImage({ src: data.url }).run();
+      }
+    } catch (error) {
+      alert('Failed to upload image');
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const setLink = () => {
+    const previousUrl = editor.getAttributes('link').href;
+    const url = window.prompt('Enter URL', previousUrl);
+    if (url === null) return;
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
+    }
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+  };
+
+  return (
+    <div className="border border-zinc-200 rounded-xl overflow-hidden bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
+      <div className="bg-zinc-50 border-b border-zinc-200 p-1.5 flex flex-wrap gap-0.5 sticky top-0 z-10">
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('bold') && "bg-white text-emerald-600 shadow-sm")}
+          title="Bold"
+        >
+          <BoldIcon className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('italic') && "bg-white text-emerald-600 shadow-sm")}
+          title="Italic"
+        >
+          <ItalicIcon className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('underline') && "bg-white text-emerald-600 shadow-sm")}
+          title="Underline"
+        >
+          <UnderlineIcon className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('heading', { level: 1 }) && "bg-white text-emerald-600 shadow-sm")}
+          title="Heading 1"
+        >
+          <Heading1 className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('heading', { level: 2 }) && "bg-white text-emerald-600 shadow-sm")}
+          title="Heading 2"
+        >
+          <Heading2 className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('blockquote') && "bg-white text-emerald-600 shadow-sm")}
+          title="Quote"
+        >
+          <Quote className="w-4 h-4" />
+        </button>
+        <div className="w-px h-6 bg-zinc-200 mx-1 self-center" />
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('bulletList') && "bg-white text-emerald-600 shadow-sm")}
+          title="Bullet List"
+        >
+          <ListIcon className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('orderedList') && "bg-white text-emerald-600 shadow-sm")}
+          title="Ordered List"
+        >
+          <ListOrdered className="w-4 h-4" />
+        </button>
+        <div className="w-px h-6 bg-zinc-200 mx-1 self-center" />
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive({ textAlign: 'left' }) && "bg-white text-emerald-600 shadow-sm")}
+          title="Align Left"
+        >
+          <AlignLeft className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive({ textAlign: 'center' }) && "bg-white text-emerald-600 shadow-sm")}
+          title="Align Center"
+        >
+          <AlignCenter className="w-4 h-4" />
+        </button>
+        <div className="w-px h-6 bg-zinc-200 mx-1 self-center" />
+        <button
+          type="button"
+          onClick={setLink}
+          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('link') && "bg-white text-emerald-600 shadow-sm")}
+          title="Add Link"
+        >
+          <LucideLink className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={addImage}
+          className="p-2 rounded-lg hover:bg-zinc-200 transition-colors"
+          title="Upload Image"
+        >
+          <Image className="w-4 h-4" />
+        </button>
+        <input 
+          type="file"
+          ref={fileInputRef}
+          onChange={handleImageUpload}
+          accept="image/*"
+          className="hidden"
+        />
+      </div>
+
+      <EditorContent 
+        editor={editor} 
+        className="p-4 min-h-[250px] prose prose-zinc max-w-none focus:outline-none text-sm sm:text-base break-words" 
+      />
+    </div>
+  );
+};
 
 const IconMap: Record<string, React.ReactNode> = {
   FileText: <FileText className="w-full h-full" />,
@@ -379,7 +583,7 @@ const HomePage = () => {
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ delay: idx * 0.1 }}
                 className={cn(
-                  "mb-4 p-4 rounded-2xl border flex items-start space-x-4 shadow-sm backdrop-blur-md",
+                  "mb-4 p-4 rounded-2xl border flex items-start space-x-4 shadow-sm backdrop-blur-md overflow-hidden",
                   notice.type === 'warning' ? "bg-amber-50/80 border-amber-200 text-amber-800" : 
                   notice.type === 'success' ? "bg-emerald-50/80 border-emerald-200 text-emerald-800" :
                   "bg-blue-50/80 border-blue-200 text-blue-800"
@@ -389,7 +593,7 @@ const HomePage = () => {
                   {notice.type === 'warning' ? <Info className="w-5 h-5" /> : <Bell className="w-5 h-5" />}
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-sm md:text-base">{notice.content}</p>
+                  <p className="font-medium text-sm md:text-base break-words">{notice.content}</p>
                   <span className="text-[10px] opacity-60 uppercase font-bold tracking-wider">
                     Posted {new Date(notice.created_at).toLocaleDateString()}
                   </span>
@@ -745,8 +949,8 @@ const CategoryPage = () => {
                   {post.title.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-xl font-bold text-zinc-900">{post.title}</h3>
-                  <p className="text-xs sm:text-base text-zinc-500 font-medium">{post.contact || 'No number'}</p>
+                  <h3 className="text-base sm:text-xl font-bold text-zinc-900 break-words">{post.title}</h3>
+                  <p className="text-xs sm:text-base text-zinc-500 font-medium break-words">{post.contact || 'No number'}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-1.5 sm:space-x-2">
@@ -771,7 +975,7 @@ const CategoryPage = () => {
                 </button>
               </div>
               <div id={`desc-${post.id}`} className="hidden absolute left-0 right-0 top-full mt-2 z-20 p-4 sm:p-6 bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl shadow-2xl text-zinc-600 text-xs sm:text-sm">
-                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }} />
+                <div className="break-words" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }} />
               </div>
             </motion.div>
           ))}
@@ -804,7 +1008,7 @@ const CategoryPage = () => {
             >
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 sm:gap-6 mb-4 sm:mb-8">
                 <div>
-                  <h3 className="text-lg sm:text-3xl font-black text-zinc-900 mb-2 sm:mb-4 leading-tight">{post.title}</h3>
+                  <h3 className="text-lg sm:text-3xl font-black text-zinc-900 mb-2 sm:mb-4 leading-tight break-words">{post.title}</h3>
                   <div className="flex flex-wrap gap-2 sm:gap-4">
                     <div className="flex items-center text-[10px] sm:text-sm text-zinc-500 bg-zinc-50 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full">
                       <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-emerald-600" />
@@ -830,9 +1034,21 @@ const CategoryPage = () => {
               </div>
 
               <div 
-                className="prose-content text-zinc-700 text-sm sm:text-lg leading-relaxed"
+                className="prose-content text-zinc-700 text-sm sm:text-lg leading-relaxed break-words"
                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }}
               />
+
+              {post.pdf_url && (
+                <a 
+                  href={post.pdf_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2.5 bg-emerald-50 text-emerald-700 rounded-xl font-bold text-xs sm:text-sm hover:bg-emerald-100 transition-all mt-6 border border-emerald-100 group/pdf"
+                >
+                  <FileText className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                  View PDF Guide
+                </a>
+              )}
             </motion.div>
           ))}
         </div>
@@ -852,13 +1068,18 @@ const SubmissionForm = () => {
       title: '',
       description: '',
       contact: '',
-      submitted_by: ''
+      submitted_by: '',
+      pdf_url: ''
     }
   });
+
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
 
   const selectedCategoryId = watch('category_id');
   const selectedCategory = categories.find(c => c.id.toString() === selectedCategoryId.toString());
   const isEmergency = selectedCategory?.slug === 'emergency';
+  const isPrayer = selectedCategory?.slug === 'prayer';
 
   useEffect(() => {
     fetch('/api/categories')
@@ -872,6 +1093,36 @@ const SubmissionForm = () => {
       });
   }, [searchParams, setValue]);
 
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (file.type !== 'application/pdf') {
+      alert('Please upload a PDF file');
+      return;
+    }
+
+    setUploadingPdf(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.url) {
+        setValue('pdf_url', data.url);
+        setPdfFile(file);
+      }
+    } catch (error) {
+      alert('Failed to upload PDF');
+    } finally {
+      setUploadingPdf(false);
+    }
+  };
+
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
@@ -883,6 +1134,7 @@ const SubmissionForm = () => {
       if (res.ok) {
         setSubmitted(true);
         reset();
+        setPdfFile(null);
       }
     } catch (error) {
       alert('Failed to submit. Please try again.');
@@ -992,18 +1244,68 @@ const SubmissionForm = () => {
                 control={control}
                 rules={{ required: !isEmergency }}
                 render={({ field }) => (
-                  <ReactQuill 
-                    theme="snow"
-                    value={field.value}
-                    onChange={field.onChange}
-                    modules={quillModules}
-                    placeholder={isEmergency ? "How to call or what to say..." : "Write your guide here... You can use bold, lists, and links!"}
-                  />
+                  (!isEmergency && !isPrayer) ? (
+                    <RichTextEditor 
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder={isEmergency ? "How to call or what to say..." : "Write your guide here... You can use bold, lists, and links!"}
+                    />
+                  ) : (
+                    <textarea 
+                      value={field.value}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      placeholder={isEmergency ? "How to call or what to say..." : "Write your guide here..."}
+                      className="w-full px-4 py-3 bg-zinc-50 border-none focus:ring-0 outline-none transition-all text-sm sm:text-base min-h-[150px]"
+                    />
+                  )
                 )}
               />
             </div>
             {!isEmergency && errors.description && <span className="text-red-500 text-[10px] font-bold">Description is required</span>}
           </div>
+
+          {(!isEmergency && !isPrayer) && (
+            <div className="space-y-2 sm:space-y-3">
+              <label className="text-[10px] sm:text-sm font-bold text-zinc-700 uppercase tracking-wider flex items-center">
+                <FileText className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+                Upload PDF Guide (Optional)
+              </label>
+              <div className="relative">
+                <input 
+                  type="file"
+                  accept=".pdf"
+                  onChange={handlePdfUpload}
+                  className="hidden"
+                  id="pdf-upload"
+                />
+                <label 
+                  htmlFor="pdf-upload"
+                  className={cn(
+                    "flex items-center justify-center w-full px-6 py-4 border-2 border-dashed rounded-2xl cursor-pointer transition-all",
+                    pdfFile ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-zinc-50 border-zinc-200 text-zinc-500 hover:border-emerald-300 hover:bg-emerald-50/30"
+                  )}
+                >
+                  {uploadingPdf ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-600"></div>
+                      <span className="text-sm font-bold">Uploading...</span>
+                    </div>
+                  ) : pdfFile ? (
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-5 h-5" />
+                      <span className="text-sm font-bold">{pdfFile.name}</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <Upload className="w-6 h-6 mb-1 opacity-50" />
+                      <span className="text-sm font-bold">Click to upload PDF</span>
+                      <span className="text-[10px] opacity-60">Max 10MB</span>
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
+          )}
 
           <div className="pt-4 sm:pt-6 border-t border-zinc-100">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
@@ -1446,7 +1748,7 @@ const AdminDashboard = () => {
                         Submitted on {new Date(previewPost.created_at).toLocaleDateString()}
                       </span>
                     </div>
-                    <h2 className="text-xl sm:text-4xl font-black text-zinc-900 leading-tight">
+                    <h2 className="text-xl sm:text-4xl font-black text-zinc-900 leading-tight break-words">
                       {previewPost.title}
                     </h2>
                   </div>
@@ -1459,7 +1761,7 @@ const AdminDashboard = () => {
                         </div>
                         <span className="text-[9px] sm:text-xs font-black text-zinc-400 uppercase tracking-widest">Location</span>
                       </div>
-                      <p className="text-sm sm:text-base text-zinc-900 font-bold">{previewPost.location || 'Not specified'}</p>
+                      <p className="text-sm sm:text-base text-zinc-900 font-bold break-words">{previewPost.location || 'Not specified'}</p>
                     </div>
                     <div className="p-4 sm:p-6 bg-zinc-50 rounded-2xl sm:rounded-3xl border border-zinc-100">
                       <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
@@ -1468,14 +1770,32 @@ const AdminDashboard = () => {
                         </div>
                         <span className="text-[9px] sm:text-xs font-black text-zinc-400 uppercase tracking-widest">Contact</span>
                       </div>
-                      <p className="text-sm sm:text-base text-zinc-900 font-bold">{previewPost.contact || 'Not specified'}</p>
+                      <p className="text-sm sm:text-base text-zinc-900 font-bold break-words">{previewPost.contact || 'Not specified'}</p>
                     </div>
+                    {previewPost.pdf_url && (
+                      <div className="p-4 sm:p-6 bg-emerald-50 rounded-2xl sm:rounded-3xl border border-emerald-100">
+                        <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-lg sm:rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
+                            <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          </div>
+                          <span className="text-[9px] sm:text-xs font-black text-emerald-400 uppercase tracking-widest">PDF Guide</span>
+                        </div>
+                        <a 
+                          href={previewPost.pdf_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-sm sm:text-base text-emerald-700 font-bold underline"
+                        >
+                          View Attached PDF
+                        </a>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-3 sm:space-y-4">
                     <h4 className="text-[10px] sm:text-sm font-black text-zinc-900 uppercase tracking-widest">Description</h4>
                     <div 
-                      className="prose prose-zinc max-w-none text-zinc-600 leading-relaxed text-sm sm:text-base"
+                      className="prose prose-zinc max-w-none text-zinc-600 leading-relaxed text-sm sm:text-base break-words"
                       dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(previewPost.description) }}
                     />
                   </div>
