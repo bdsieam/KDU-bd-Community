@@ -332,7 +332,7 @@ const HomePage = () => {
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl sm:text-5xl md:text-7xl font-black text-zinc-900 mb-4 sm:mb-6 tracking-tight px-2"
+              className="text-3xl sm:text-5xl md:text-7xl font-black text-zinc-900 mb-3 sm:mb-6 tracking-tight px-2 leading-tight"
             >
               Everything you need <br />
               <span className="text-emerald-600">in South Korea.</span>
@@ -341,7 +341,7 @@ const HomePage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-zinc-600 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-4"
+              className="text-zinc-600 text-sm sm:text-lg md:text-xl max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed px-6"
             >
               A collaborative platform for Bangladeshi students at Kyungdong University. 
               Find visa guides, jobs, halal food, and more.
@@ -355,13 +355,13 @@ const HomePage = () => {
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
               <div className="relative px-4 sm:px-0">
-                <Search className="absolute left-8 sm:left-6 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5 sm:w-6 sm:h-6" />
+                <Search className="absolute left-8 sm:left-6 top-1/2 -translate-y-1/2 text-zinc-400 w-4 h-4 sm:w-6 sm:h-6" />
                 <input 
                   type="text" 
                   placeholder="Search for visa, halal food, jobs..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-14 sm:pl-16 pr-6 py-4 sm:py-6 bg-white border border-zinc-200 rounded-2xl shadow-2xl shadow-emerald-900/5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-base sm:text-lg"
+                  className="w-full pl-12 sm:pl-16 pr-6 py-3.5 sm:py-6 bg-white border border-zinc-200 rounded-xl sm:rounded-2xl shadow-2xl shadow-emerald-900/5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm sm:text-lg"
                 />
               </div>
             </motion.div>
@@ -405,18 +405,18 @@ const HomePage = () => {
       </div>
 
       {/* Categories Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20">
-        <div className="flex items-center justify-between mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8 pb-20">
+        <div className="flex items-center justify-between mb-8 sm:mb-12">
           <div>
-            <h2 className="text-3xl font-bold text-zinc-900">Explore Services</h2>
-            <p className="text-zinc-500">Find exactly what you're looking for</p>
+            <h2 className="text-xl sm:text-3xl font-bold text-zinc-900">Explore Services</h2>
+            <p className="text-xs sm:text-base text-zinc-500">Find exactly what you're looking for</p>
           </div>
           <div className="hidden sm:flex items-center space-x-2 text-sm text-zinc-400">
             <span>{filteredCategories.length} Categories</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-6 md:gap-10">
           <AnimatePresence mode="popLayout">
             {filteredCategories.map((cat, idx) => (
               <motion.div
@@ -657,31 +657,31 @@ const CategoryPage = () => {
   if (loading) return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div></div>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 sm:mb-8 gap-4">
-        <Link to="/" className="inline-flex items-center text-zinc-500 hover:text-emerald-600 transition-colors text-sm sm:text-base">
-          <ArrowLeft className="w-4 h-4 mr-2" />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 sm:mb-8 gap-3 sm:gap-4">
+        <Link to="/" className="inline-flex items-center text-zinc-500 hover:text-emerald-600 transition-colors text-xs sm:text-base">
+          <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
           Back to Home
         </Link>
         {slug !== 'prayer' && (
           <Link 
             to={`/add?category=${category?.id}`} 
-            className="inline-flex items-center justify-center px-6 py-3 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 active:scale-95 text-sm sm:text-base"
+            className="inline-flex items-center justify-center px-4 py-2.5 sm:px-6 sm:py-3 bg-emerald-600 text-white rounded-xl sm:rounded-2xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 active:scale-95 text-xs sm:text-base"
           >
-            <Plus className="w-5 h-5 mr-2" />
+            <Plus className="w-4 h-4 mr-1.5" />
             Add {slug === 'emergency' ? 'Contact' : 'Information'}
           </Link>
         )}
       </div>
 
-      <div className="mb-8 sm:mb-12">
-        <div className="flex items-center space-x-3 sm:space-x-4 mb-3 sm:mb-4">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center scale-90 sm:scale-100">
+      <div className="mb-6 sm:mb-12">
+        <div className="flex items-center space-x-3 sm:space-x-4 mb-2 sm:mb-4">
+          <div className="w-10 h-10 sm:w-16 sm:h-16 bg-emerald-50 text-emerald-600 rounded-lg sm:rounded-2xl flex items-center justify-center scale-90 sm:scale-100">
             {category && IconMap[category.icon]}
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-zinc-900">{category?.name}</h1>
+          <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-zinc-900">{category?.name}</h1>
         </div>
-        <p className="text-zinc-600 text-sm sm:text-base md:text-lg max-w-3xl">{category?.description}</p>
+        <p className="text-zinc-600 text-xs sm:text-base md:text-lg max-w-3xl leading-relaxed">{category?.description}</p>
       </div>
 
       {slug === 'emergency' && (
@@ -718,45 +718,45 @@ const CategoryPage = () => {
         </motion.div>
       )}
 
-      <div className="max-w-xl mb-8 sm:mb-12 relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5" />
+      <div className="max-w-xl mb-6 sm:mb-12 relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-4 h-4 sm:w-5 sm:h-5" />
         <input 
           type="text" 
           placeholder={`Search in ${category?.name}...`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border border-zinc-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm sm:text-base"
+          className="w-full pl-10 pr-4 py-2.5 sm:pl-12 sm:py-4 bg-white border border-zinc-200 rounded-xl sm:rounded-2xl shadow-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-xs sm:text-base"
         />
       </div>
 
       {slug === 'prayer' && <PrayerTimes />}
 
       {slug === 'emergency' ? (
-        <div className="max-w-3xl mx-auto space-y-4">
+        <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4">
           {filteredPosts.map((post) => (
             <motion.div 
               key={post.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white border border-zinc-200 rounded-3xl p-6 flex items-center justify-between shadow-sm hover:shadow-md transition-all group relative"
+              className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 flex items-center justify-between shadow-sm hover:shadow-md transition-all group relative"
             >
-              <div className="flex items-center space-x-5">
-                <div className="w-14 h-14 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner group-hover:bg-red-600 group-hover:text-white transition-colors">
+              <div className="flex items-center space-x-3 sm:space-x-5">
+                <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-50 text-red-600 rounded-lg sm:rounded-2xl flex items-center justify-center font-black text-base sm:text-xl shadow-inner group-hover:bg-red-600 group-hover:text-white transition-colors">
                   {post.title.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-zinc-900">{post.title}</h3>
-                  <p className="text-zinc-500 font-medium">{post.contact || 'No number'}</p>
+                  <h3 className="text-base sm:text-xl font-bold text-zinc-900">{post.title}</h3>
+                  <p className="text-xs sm:text-base text-zinc-500 font-medium">{post.contact || 'No number'}</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
                 {post.contact && (
                   <a 
                     href={`tel:${post.contact.replace(/[^0-9]/g, '')}`}
-                    className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-90"
+                    className="w-9 h-9 sm:w-12 sm:h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-90"
                     title="Call"
                   >
-                    <PhoneCall className="w-5 h-5" />
+                    <PhoneCall className="w-4 h-4 sm:w-5 sm:h-5" />
                   </a>
                 )}
                 <button 
@@ -764,13 +764,13 @@ const CategoryPage = () => {
                     const el = document.getElementById(`desc-${post.id}`);
                     if (el) el.classList.toggle('hidden');
                   }}
-                  className="w-12 h-12 bg-zinc-50 text-zinc-400 rounded-full flex items-center justify-center hover:bg-zinc-200 hover:text-zinc-600 transition-all shadow-sm"
+                  className="w-9 h-9 sm:w-12 sm:h-12 bg-zinc-50 text-zinc-400 rounded-full flex items-center justify-center hover:bg-zinc-200 hover:text-zinc-600 transition-all shadow-sm"
                   title="Details"
                 >
-                  <Info className="w-5 h-5" />
+                  <Info className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
-              <div id={`desc-${post.id}`} className="hidden absolute left-0 right-0 top-full mt-2 z-20 p-6 bg-white border border-zinc-200 rounded-3xl shadow-2xl text-zinc-600 text-sm">
+              <div id={`desc-${post.id}`} className="hidden absolute left-0 right-0 top-full mt-2 z-20 p-4 sm:p-6 bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl shadow-2xl text-zinc-600 text-xs sm:text-sm">
                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }} />
               </div>
             </motion.div>
@@ -794,25 +794,25 @@ const CategoryPage = () => {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-8">
+        <div className="grid grid-cols-1 gap-4 sm:gap-8">
           {filteredPosts.map((post) => (
             <motion.div 
               key={post.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white border border-zinc-200 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all p-8 md:p-10"
+              className="bg-white border border-zinc-200 rounded-2xl sm:rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all p-5 sm:p-8 md:p-10"
             >
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 sm:gap-6 mb-4 sm:mb-8">
                 <div>
-                  <h3 className="text-3xl font-black text-zinc-900 mb-4">{post.title}</h3>
-                  <div className="flex flex-wrap gap-4">
-                    <div className="flex items-center text-sm text-zinc-500 bg-zinc-50 px-3 py-1.5 rounded-full">
-                      <Clock className="w-4 h-4 mr-2 text-emerald-600" />
-                      {new Date(post.created_at).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                  <h3 className="text-lg sm:text-3xl font-black text-zinc-900 mb-2 sm:mb-4 leading-tight">{post.title}</h3>
+                  <div className="flex flex-wrap gap-2 sm:gap-4">
+                    <div className="flex items-center text-[10px] sm:text-sm text-zinc-500 bg-zinc-50 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full">
+                      <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-emerald-600" />
+                      {new Date(post.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
                     </div>
                     {post.submitted_by && (
-                      <div className="flex items-center text-sm text-zinc-500 bg-zinc-50 px-3 py-1.5 rounded-full">
-                        <GraduationCap className="w-4 h-4 mr-2 text-emerald-600" />
+                      <div className="flex items-center text-[10px] sm:text-sm text-zinc-500 bg-zinc-50 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full">
+                        <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-emerald-600" />
                         By {post.submitted_by}
                       </div>
                     )}
@@ -821,16 +821,16 @@ const CategoryPage = () => {
                 {post.contact && (
                   <a 
                     href={`tel:${post.contact.replace(/[^0-9]/g, '')}`}
-                    className="inline-flex items-center px-6 py-4 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-600/20 active:scale-95 whitespace-nowrap"
+                    className="inline-flex items-center justify-center px-4 py-2.5 sm:px-6 sm:py-4 bg-red-600 text-white rounded-xl sm:rounded-2xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-600/20 active:scale-95 whitespace-nowrap text-xs sm:text-base"
                   >
-                    <PhoneCall className="w-5 h-5 mr-2" />
+                    <PhoneCall className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                     Call {post.contact}
                   </a>
                 )}
               </div>
 
               <div 
-                className="prose-content text-zinc-700 text-lg"
+                className="prose-content text-zinc-700 text-sm sm:text-lg leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }}
               />
             </motion.div>
@@ -929,64 +929,64 @@ const SubmissionForm = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-[2.5rem] p-6 sm:p-8 md:p-12 shadow-xl shadow-zinc-200/50">
-        <div className="mb-8 sm:mb-10">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-zinc-900 mb-2 sm:mb-3">
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-12">
+      <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-8 md:p-12 shadow-xl shadow-zinc-200/50">
+        <div className="mb-6 sm:mb-10">
+          <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-zinc-900 mb-2 sm:mb-3">
             {isEmergency ? 'Add Emergency Contact' : 'Share Your Knowledge'}
           </h1>
-          <p className="text-zinc-600 text-sm sm:text-base md:text-lg">
+          <p className="text-zinc-600 text-xs sm:text-base md:text-lg">
             {isEmergency 
               ? 'Add a new emergency number or important service contact for the community.' 
               : 'Help fellow students by writing a detailed guide or sharing a useful place.'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-3">
-              <label className="text-sm font-bold text-zinc-700 uppercase tracking-wider">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+            <div className="space-y-2 sm:space-y-3">
+              <label className="text-[10px] sm:text-sm font-bold text-zinc-700 uppercase tracking-wider">
                 {isEmergency ? 'Contact Name *' : 'Title *'}
               </label>
               <input 
                 {...register('title', { required: true })}
                 placeholder={isEmergency ? "e.g., Police Station" : "e.g., How to extend D2 Visa"}
-                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-lg"
+                className="w-full px-4 py-3 sm:px-6 sm:py-4 bg-zinc-50 border border-zinc-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm sm:text-lg"
               />
-              {errors.title && <span className="text-red-500 text-xs font-bold">This field is required</span>}
+              {errors.title && <span className="text-red-500 text-[10px] font-bold">This field is required</span>}
             </div>
-            <div className="space-y-3">
-              <label className="text-sm font-bold text-zinc-700 uppercase tracking-wider">Category *</label>
+            <div className="space-y-2 sm:space-y-3">
+              <label className="text-[10px] sm:text-sm font-bold text-zinc-700 uppercase tracking-wider">Category *</label>
               <select 
                 {...register('category_id', { required: true })}
-                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-lg appearance-none"
+                className="w-full px-4 py-3 sm:px-6 sm:py-4 bg-zinc-50 border border-zinc-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm sm:text-lg appearance-none"
               >
                 <option value="">Select a category</option>
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
               </select>
-              {errors.category_id && <span className="text-red-500 text-xs font-bold">Category is required</span>}
+              {errors.category_id && <span className="text-red-500 text-[10px] font-bold">Category is required</span>}
             </div>
           </div>
 
           {isEmergency && (
-            <div className="space-y-3">
-              <label className="text-sm font-bold text-zinc-700 uppercase tracking-wider">Phone Number *</label>
+            <div className="space-y-2 sm:space-y-3">
+              <label className="text-[10px] sm:text-sm font-bold text-zinc-700 uppercase tracking-wider">Phone Number *</label>
               <input 
                 {...register('contact', { required: isEmergency })}
                 placeholder="e.g., 112 or 010-XXXX-XXXX"
-                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-lg"
+                className="w-full px-4 py-3 sm:px-6 sm:py-4 bg-zinc-50 border border-zinc-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm sm:text-lg"
               />
-              {errors.contact && <span className="text-red-500 text-xs font-bold">Phone number is required</span>}
+              {errors.contact && <span className="text-red-500 text-[10px] font-bold">Phone number is required</span>}
             </div>
           )}
 
-          <div className="space-y-3">
-            <label className="text-sm font-bold text-zinc-700 uppercase tracking-wider">
+          <div className="space-y-2 sm:space-y-3">
+            <label className="text-[10px] sm:text-sm font-bold text-zinc-700 uppercase tracking-wider">
               {isEmergency ? 'Instructions / Notes (Optional)' : 'Description / Guide Content *'}
             </label>
-            <div className="rounded-2xl overflow-hidden border border-zinc-200">
+            <div className="rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-200">
               <Controller
                 name="description"
                 control={control}
@@ -1002,29 +1002,29 @@ const SubmissionForm = () => {
                 )}
               />
             </div>
-            {!isEmergency && errors.description && <span className="text-red-500 text-xs font-bold">Description is required</span>}
+            {!isEmergency && errors.description && <span className="text-red-500 text-[10px] font-bold">Description is required</span>}
           </div>
 
-          <div className="pt-6 border-t border-zinc-100">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex-1 space-y-3">
-                <label className="text-sm font-bold text-zinc-700 uppercase tracking-wider">Your Name (Optional)</label>
+          <div className="pt-4 sm:pt-6 border-t border-zinc-100">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+              <div className="flex-1 space-y-2 sm:space-y-3">
+                <label className="text-[10px] sm:text-sm font-bold text-zinc-700 uppercase tracking-wider">Your Name (Optional)</label>
                 <input 
                   {...register('submitted_by')}
                   placeholder="Anonymous Student"
-                  className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                  className="w-full px-4 py-3 sm:px-6 sm:py-4 bg-zinc-50 border border-zinc-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
                 />
               </div>
               <div className="md:pt-8">
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="w-full md:w-auto px-12 py-5 bg-emerald-600 text-white rounded-2xl font-bold text-lg hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 disabled:opacity-50 flex items-center justify-center group"
+                  className="w-full md:w-auto px-8 py-3.5 sm:px-12 sm:py-5 bg-emerald-600 text-white rounded-xl sm:rounded-2xl font-bold text-sm sm:text-lg hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 disabled:opacity-50 flex items-center justify-center group"
                 >
                   {loading ? 'Submitting...' : (
                     <>
                       {isEmergency ? 'Submit Contact' : 'Submit Guide'}
-                      <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                      <Send className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </>
                   )}
                 </button>
@@ -1401,30 +1401,30 @@ const AdminDashboard = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+              className="relative w-full max-w-4xl bg-white rounded-2xl sm:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
             >
-              <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-white sticky top-0 z-10">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
-                    <Eye className="w-6 h-6" />
+              <div className="p-4 sm:p-6 border-b border-zinc-100 flex items-center justify-between bg-white sticky top-0 z-10">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-50 text-emerald-600 rounded-lg sm:rounded-xl flex items-center justify-center">
+                    <Eye className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                   <div>
-                    <h3 className="font-black text-zinc-900">Post Preview</h3>
-                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Reviewing submission</p>
+                    <h3 className="text-sm sm:text-base font-black text-zinc-900 leading-none">Post Preview</h3>
+                    <p className="text-[9px] sm:text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1">Reviewing submission</p>
                   </div>
                 </div>
                 <button 
                   onClick={() => setPreviewPost(null)}
-                  className="p-2 hover:bg-zinc-100 rounded-full transition-colors"
+                  className="p-1.5 sm:p-2 hover:bg-zinc-100 rounded-full transition-colors"
                 >
-                  <X className="w-6 h-6 text-zinc-400" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-400" />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-8">
-                <div className="max-w-3xl mx-auto space-y-8">
+              <div className="flex-1 overflow-y-auto p-5 sm:p-8">
+                <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
                   {previewPost.image_url && (
-                    <div className="aspect-video w-full rounded-[2rem] overflow-hidden bg-zinc-100 border border-zinc-200">
+                    <div className="aspect-video w-full rounded-2xl sm:rounded-[2rem] overflow-hidden bg-zinc-100 border border-zinc-200">
                       <img 
                         src={previewPost.image_url} 
                         alt={previewPost.title}
@@ -1437,45 +1437,45 @@ const AdminDashboard = () => {
                     </div>
                   )}
 
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div className="flex items-center space-x-2">
-                      <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wider">
+                      <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-emerald-50 text-emerald-600 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wider">
                         {previewPost.category_name}
                       </span>
-                      <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
+                      <span className="text-[9px] sm:text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
                         Submitted on {new Date(previewPost.created_at).toLocaleDateString()}
                       </span>
                     </div>
-                    <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 leading-tight">
+                    <h2 className="text-xl sm:text-4xl font-black text-zinc-900 leading-tight">
                       {previewPost.title}
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
-                      <div className="flex items-center space-x-3 mb-4">
-                        <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
-                          <MapPin className="w-4 h-4" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="p-4 sm:p-6 bg-zinc-50 rounded-2xl sm:rounded-3xl border border-zinc-100">
+                      <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-lg sm:rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
+                          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </div>
-                        <span className="text-xs font-black text-zinc-400 uppercase tracking-widest">Location</span>
+                        <span className="text-[9px] sm:text-xs font-black text-zinc-400 uppercase tracking-widest">Location</span>
                       </div>
-                      <p className="text-zinc-900 font-bold">{previewPost.location || 'Not specified'}</p>
+                      <p className="text-sm sm:text-base text-zinc-900 font-bold">{previewPost.location || 'Not specified'}</p>
                     </div>
-                    <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
-                      <div className="flex items-center space-x-3 mb-4">
-                        <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
-                          <PhoneCall className="w-4 h-4" />
+                    <div className="p-4 sm:p-6 bg-zinc-50 rounded-2xl sm:rounded-3xl border border-zinc-100">
+                      <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-lg sm:rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
+                          <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </div>
-                        <span className="text-xs font-black text-zinc-400 uppercase tracking-widest">Contact</span>
+                        <span className="text-[9px] sm:text-xs font-black text-zinc-400 uppercase tracking-widest">Contact</span>
                       </div>
-                      <p className="text-zinc-900 font-bold">{previewPost.contact || 'Not specified'}</p>
+                      <p className="text-sm sm:text-base text-zinc-900 font-bold">{previewPost.contact || 'Not specified'}</p>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-black text-zinc-900 uppercase tracking-widest">Description</h4>
+                  <div className="space-y-3 sm:space-y-4">
+                    <h4 className="text-[10px] sm:text-sm font-black text-zinc-900 uppercase tracking-widest">Description</h4>
                     <div 
-                      className="prose prose-zinc max-w-none text-zinc-600 leading-relaxed"
+                      className="prose prose-zinc max-w-none text-zinc-600 leading-relaxed text-sm sm:text-base"
                       dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(previewPost.description) }}
                     />
                   </div>
@@ -1507,12 +1507,12 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="p-6 border-t border-zinc-100 bg-zinc-50 flex items-center justify-end space-x-4">
+              <div className="p-4 sm:p-6 border-t border-zinc-100 bg-zinc-50 flex items-center justify-end space-x-3 sm:space-x-4">
                 <button 
                   onClick={() => setPreviewPost(null)}
-                  className="px-6 py-3 text-zinc-500 font-bold hover:text-zinc-900 transition-colors"
+                  className="px-4 py-2 sm:px-6 sm:py-3 text-zinc-500 font-bold hover:text-zinc-900 transition-colors text-sm sm:text-base"
                 >
-                  Close Preview
+                  Close
                 </button>
                 {previewPost.status === 'pending' && (
                   <button 
@@ -1520,9 +1520,9 @@ const AdminDashboard = () => {
                       updateStatus(previewPost.id, 'approved');
                       setPreviewPost(null);
                     }}
-                    className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-black hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20"
+                    className="px-5 py-2.5 sm:px-8 sm:py-3 bg-emerald-600 text-white rounded-lg sm:rounded-xl font-black hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 text-sm sm:text-base"
                   >
-                    Approve Submission
+                    Approve
                   </button>
                 )}
               </div>
