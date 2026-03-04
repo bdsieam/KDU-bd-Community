@@ -230,7 +230,7 @@ const Navbar = ({ pendingCount }: { pendingCount?: number }) => {
         <div className="flex justify-between h-16 items-center">
           <Link to="/" className="flex items-center space-x-2 sm:space-x-3 group">
             <img 
-              src="/logo.png" 
+              src="/logobd.png" 
               alt="KDU Community Logo" 
               className="w-10 h-10 sm:w-12 sm:h-12 object-contain group-hover:scale-110 transition-transform"
               onError={(e) => {
@@ -1363,7 +1363,14 @@ const AdminDashboard = () => {
       {/* Mobile Header */}
       <div className="md:hidden bg-white border-b border-zinc-200 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">K</div>
+          <img 
+            src="/logobd.png" 
+            alt="Logo" 
+            className="w-8 h-8 object-contain"
+            onError={(e) => {
+              e.currentTarget.src = "https://picsum.photos/seed/community-logo/100/100";
+            }}
+          />
           <span className="font-bold text-zinc-900">Admin Panel</span>
         </div>
         <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 text-zinc-500">
@@ -1532,9 +1539,14 @@ const AdminDashboard = () => {
         <div className="h-full flex flex-col">
           <div className="p-6 border-b border-zinc-100 hidden md:block">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-600/20">
-                K
-              </div>
+              <img 
+                src="/logobd.png" 
+                alt="Logo" 
+                className="w-10 h-10 object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = "https://picsum.photos/seed/community-logo/100/100";
+                }}
+              />
               <div>
                 <h2 className="font-black text-zinc-900 leading-none">KDU Community</h2>
                 <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mt-1">Admin Dashboard</p>
@@ -2357,7 +2369,7 @@ export default function App() {
             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
               <div className="flex items-center space-x-3">
                 <img 
-                  src="/logo.png" 
+                  src="/logobd.png" 
                   alt="Logo" 
                   className="w-10 h-10 object-contain"
                   onError={(e) => {
