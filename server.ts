@@ -198,7 +198,7 @@ async function startServer() {
 
   const upload = multer({
     storage,
-    limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
     fileFilter: (req, file, cb) => {
       const allowedTypes = [".pdf", ".jpg", ".jpeg", ".png", ".webp"];
       const ext = path.extname(file.originalname).toLowerCase();

@@ -24,7 +24,8 @@ import {
   Type, Unlock, Upload, VideoOff, Volume, Watch, Wifi, Wind, Youtube,
   Bold, Italic, Underline as UnderlineIcon, List as ListIcon, ListOrdered, Quote, Heading1, Heading2, AlignLeft, AlignCenter, AlignRight,
   Bold as BoldIcon, Italic as ItalicIcon, Strikethrough,
-  Smile, Frown, Meh, Ghost, Crown, Gem, Flame, Rocket, Hammer, Wrench
+  Smile, Frown, Meh, Ghost, Crown, Gem, Flame, Rocket, Hammer, Wrench,
+  Palette, Indent, Outdent
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useForm, Controller } from 'react-hook-form';
@@ -38,6 +39,8 @@ import LinkExtension from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
+import { TextStyle } from '@tiptap/extension-text-style';
+import { Color } from '@tiptap/extension-color';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -100,6 +103,8 @@ const RichTextEditor = ({ value, onChange, placeholder }: { value: string, onCha
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
+      TextStyle,
+      Color,
       Placeholder.configure({
         placeholder: placeholder || 'Write something...',
       }),
@@ -109,6 +114,12 @@ const RichTextEditor = ({ value, onChange, placeholder }: { value: string, onCha
       onChange(editor.getHTML());
     },
   });
+
+  useEffect(() => {
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value);
+    }
+  }, [value, editor]);
 
   if (!editor) return null;
 
@@ -182,7 +193,7 @@ const RichTextEditor = ({ value, onChange, placeholder }: { value: string, onCha
         onClick();
       }}
       className={cn(
-        "p-2.5 sm:p-2 rounded-lg hover:bg-zinc-200 transition-colors flex items-center justify-center min-w-[36px] min-h-[36px]", 
+        "p-3 sm:p-2 rounded-lg hover:bg-zinc-200 transition-colors flex items-center justify-center min-w-[42px] min-h-[42px] sm:min-w-[36px] sm:min-h-[36px]", 
         isActive && "bg-white text-emerald-600 shadow-sm",
         className
       )}
@@ -193,94 +204,125 @@ const RichTextEditor = ({ value, onChange, placeholder }: { value: string, onCha
   );
 
   return (
-    <div className="border border-zinc-200 rounded-xl overflow-hidden bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
-      <div className="bg-zinc-50 border-b border-zinc-200 p-2 sm:p-1.5 flex flex-wrap gap-1 sm:gap-0.5 sticky top-0 z-10">
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          isActive={editor.isActive('bold')}
-          title="Bold"
-        >
-          <BoldIcon className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          isActive={editor.isActive('italic')}
-          title="Italic"
-        >
-          <ItalicIcon className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          isActive={editor.isActive('underline')}
-          title="Underline"
-        >
-          <UnderlineIcon className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          isActive={editor.isActive('heading', { level: 1 })}
-          title="Heading 1"
-        >
-          <Heading1 className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          isActive={editor.isActive('heading', { level: 2 })}
-          title="Heading 2"
-        >
-          <Heading2 className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          isActive={editor.isActive('blockquote')}
-          title="Quote"
-        >
-          <Quote className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <div className="w-px h-6 bg-zinc-200 mx-1 self-center" />
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          isActive={editor.isActive('bulletList')}
-          title="Bullet List"
-        >
-          <ListIcon className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          isActive={editor.isActive('orderedList')}
-          title="Ordered List"
-        >
-          <ListOrdered className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <div className="w-px h-6 bg-zinc-200 mx-1 self-center" />
-        <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign('left').run()}
-          isActive={editor.isActive({ textAlign: 'left' })}
-          title="Align Left"
-        >
-          <AlignLeft className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign('center').run()}
-          isActive={editor.isActive({ textAlign: 'center' })}
-          title="Align Center"
-        >
-          <AlignCenter className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <div className="w-px h-6 bg-zinc-200 mx-1 self-center" />
-        <ToolbarButton
-          onClick={setLink}
-          isActive={editor.isActive('link')}
-          title="Add Link"
-        >
-          <LucideLink className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={addImage}
-          title="Upload Image"
-        >
-          <Image className="w-4 h-4 sm:w-4 sm:h-4" />
-        </ToolbarButton>
+    <div className="border border-zinc-200 rounded-xl overflow-hidden bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all shadow-sm">
+      <div className="bg-zinc-50 border-b border-zinc-200 p-1.5 flex items-center overflow-x-auto sticky top-0 z-10 scrollbar-hide">
+        <div className="flex items-center space-x-1 pr-4 min-w-max">
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            isActive={editor.isActive('bold')}
+            title="Bold"
+          >
+            <BoldIcon className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            isActive={editor.isActive('italic')}
+            title="Italic"
+          >
+            <ItalicIcon className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            isActive={editor.isActive('underline')}
+            title="Underline"
+          >
+            <UnderlineIcon className="w-4 h-4" />
+          </ToolbarButton>
+          
+          <div className="w-px h-6 bg-zinc-200 mx-1" />
+          
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            isActive={editor.isActive('heading', { level: 1 })}
+            title="Heading 1"
+          >
+            <Heading1 className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            isActive={editor.isActive('heading', { level: 2 })}
+            title="Heading 2"
+          >
+            <Heading2 className="w-4 h-4" />
+          </ToolbarButton>
+          
+          <div className="w-px h-6 bg-zinc-200 mx-1" />
+          
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            isActive={editor.isActive('bulletList')}
+            title="Bullet List"
+          >
+            <ListIcon className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            isActive={editor.isActive('orderedList')}
+            title="Ordered List"
+          >
+            <ListOrdered className="w-4 h-4" />
+          </ToolbarButton>
+          
+          <div className="w-px h-6 bg-zinc-200 mx-1" />
+          
+          <ToolbarButton
+            onClick={() => editor.chain().focus().setTextAlign('left').run()}
+            isActive={editor.isActive({ textAlign: 'left' })}
+            title="Align Left"
+          >
+            <AlignLeft className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+            isActive={editor.isActive({ textAlign: 'center' })}
+            title="Align Center"
+          >
+            <AlignCenter className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+            isActive={editor.isActive({ textAlign: 'right' })}
+            title="Align Right"
+          >
+            <AlignRight className="w-4 h-4" />
+          </ToolbarButton>
+          
+          <div className="w-px h-6 bg-zinc-200 mx-1" />
+
+          <div className="relative flex items-center px-2 group">
+            <Palette className="w-4 h-4 text-zinc-500 mr-2" />
+            <input
+              type="color"
+              onInput={e => editor.chain().focus().setColor((e.target as HTMLInputElement).value).run()}
+              value={editor.getAttributes('textStyle').color || '#000000'}
+              className="w-6 h-6 p-0 border-none bg-transparent cursor-pointer"
+              title="Text Color"
+            />
+          </div>
+          
+          <div className="w-px h-6 bg-zinc-200 mx-1" />
+          
+          <ToolbarButton
+            onClick={setLink}
+            isActive={editor.isActive('link')}
+            title="Add Link"
+          >
+            <LucideLink className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            onClick={addImage}
+            title="Upload Image"
+          >
+            <Image className="w-4 h-4" />
+          </ToolbarButton>
+
+          <ToolbarButton
+            onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}
+            title="Clear Formatting"
+          >
+            <X className="w-4 h-4" />
+          </ToolbarButton>
+        </div>
         <input 
           type="file"
           ref={fileInputRef}
@@ -292,7 +334,7 @@ const RichTextEditor = ({ value, onChange, placeholder }: { value: string, onCha
 
       <EditorContent 
         editor={editor} 
-        className="p-4 min-h-[250px] prose prose-zinc max-w-none focus:outline-none text-sm sm:text-base break-words" 
+        className="p-4 sm:p-6 min-h-[300px] prose prose-zinc max-w-none focus:outline-none text-sm sm:text-base break-words bg-zinc-50/30" 
       />
     </div>
   );
@@ -1001,7 +1043,7 @@ const CategoryPage = () => {
                   <Info className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
-              <div id={`desc-${post.id}`} className="hidden absolute left-0 right-0 top-full mt-2 z-20 p-4 sm:p-6 bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl shadow-2xl text-zinc-600 text-xs sm:text-sm">
+              <div id={`desc-${post.id}`} className="hidden absolute left-0 right-0 top-full mt-2 z-20 p-4 sm:p-6 bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl shadow-2xl text-zinc-600 text-xs sm:text-sm whitespace-pre-wrap">
                 <div className="break-words" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }} />
               </div>
             </motion.div>
@@ -1061,7 +1103,7 @@ const CategoryPage = () => {
               </div>
 
               <div 
-                className="prose-content text-zinc-700 text-sm sm:text-lg leading-relaxed break-words"
+                className="prose-content text-zinc-700 text-sm sm:text-lg leading-relaxed break-words whitespace-pre-wrap"
                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }}
               />
 
@@ -1096,12 +1138,15 @@ const SubmissionForm = () => {
       description: '',
       contact: '',
       submitted_by: '',
-      pdf_url: ''
+      pdf_url: '',
+      image_url: ''
     }
   });
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const selectedCategoryId = watch('category_id');
   const selectedCategory = categories.find(c => c.id.toString() === selectedCategoryId.toString());
@@ -1115,10 +1160,47 @@ const SubmissionForm = () => {
         setCategories(data);
         const catId = searchParams.get('category');
         if (catId) {
-          setValue('category_id', catId);
+          setValue('category_id', catId.toString());
         }
       });
   }, [searchParams, setValue]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(errorData.error || `Server responded with ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (data.url) {
+        setValue('image_url', data.url);
+        setImageFile(file);
+      }
+    } catch (error: any) {
+      console.error('Image upload error:', error);
+      alert(`Failed to upload image: ${error.message}`);
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1169,6 +1251,7 @@ const SubmissionForm = () => {
         setSubmitted(true);
         reset();
         setPdfFile(null);
+        setImageFile(null);
       }
     } catch (error) {
       alert('Failed to submit. Please try again.');
@@ -1299,44 +1382,87 @@ const SubmissionForm = () => {
           </div>
 
           {(!isEmergency && !isPrayer) && (
-            <div className="space-y-2 sm:space-y-3">
-              <label className="text-[10px] sm:text-sm font-bold text-zinc-700 uppercase tracking-wider flex items-center">
-                <FileText className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
-                Upload PDF Guide (Optional)
-              </label>
-              <div className="relative">
-                <input 
-                  type="file"
-                  accept=".pdf"
-                  onChange={handlePdfUpload}
-                  className="hidden"
-                  id="pdf-upload"
-                />
-                <label 
-                  htmlFor="pdf-upload"
-                  className={cn(
-                    "flex items-center justify-center w-full px-6 py-4 border-2 border-dashed rounded-2xl cursor-pointer transition-all",
-                    pdfFile ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-zinc-50 border-zinc-200 text-zinc-500 hover:border-emerald-300 hover:bg-emerald-50/30"
-                  )}
-                >
-                  {uploadingPdf ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-600"></div>
-                      <span className="text-sm font-bold">Uploading...</span>
-                    </div>
-                  ) : pdfFile ? (
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-5 h-5" />
-                      <span className="text-sm font-bold">{pdfFile.name}</span>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <Upload className="w-6 h-6 mb-1 opacity-50" />
-                      <span className="text-sm font-bold">Click to upload PDF</span>
-                      <span className="text-[10px] opacity-60">Max 10MB</span>
-                    </div>
-                  )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+              <div className="space-y-2 sm:space-y-3">
+                <label className="text-[10px] sm:text-sm font-bold text-zinc-700 uppercase tracking-wider flex items-center">
+                  <Image className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+                  Upload Photo (Optional)
                 </label>
+                <div className="relative">
+                  <input 
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  <label 
+                    htmlFor="image-upload"
+                    className={cn(
+                      "flex items-center justify-center w-full px-6 py-4 border-2 border-dashed rounded-2xl cursor-pointer transition-all",
+                      imageFile ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-zinc-50 border-zinc-200 text-zinc-500 hover:border-emerald-300 hover:bg-emerald-50/30"
+                    )}
+                  >
+                    {uploadingImage ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-600"></div>
+                        <span className="text-sm font-bold">Uploading...</span>
+                      </div>
+                    ) : imageFile ? (
+                      <div className="flex items-center space-x-2">
+                        <CheckCircle className="w-5 h-5" />
+                        <span className="text-sm font-bold truncate max-w-[150px]">{imageFile.name}</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <Upload className="w-6 h-6 mb-1 opacity-50" />
+                        <span className="text-sm font-bold">Click to upload Photo</span>
+                        <span className="text-[10px] opacity-60">Max 10MB</span>
+                      </div>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              <div className="space-y-2 sm:space-y-3">
+                <label className="text-[10px] sm:text-sm font-bold text-zinc-700 uppercase tracking-wider flex items-center">
+                  <FileText className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+                  Upload PDF Guide (Optional)
+                </label>
+                <div className="relative">
+                  <input 
+                    type="file"
+                    accept=".pdf"
+                    onChange={handlePdfUpload}
+                    className="hidden"
+                    id="pdf-upload"
+                  />
+                  <label 
+                    htmlFor="pdf-upload"
+                    className={cn(
+                      "flex items-center justify-center w-full px-6 py-4 border-2 border-dashed rounded-2xl cursor-pointer transition-all",
+                      pdfFile ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-zinc-50 border-zinc-200 text-zinc-500 hover:border-emerald-300 hover:bg-emerald-50/30"
+                    )}
+                  >
+                    {uploadingPdf ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-600"></div>
+                        <span className="text-sm font-bold">Uploading...</span>
+                      </div>
+                    ) : pdfFile ? (
+                      <div className="flex items-center space-x-2">
+                        <CheckCircle className="w-5 h-5" />
+                        <span className="text-sm font-bold truncate max-w-[150px]">{pdfFile.name}</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <Upload className="w-6 h-6 mb-1 opacity-50" />
+                        <span className="text-sm font-bold">Click to upload PDF</span>
+                        <span className="text-[10px] opacity-60">Max 10MB</span>
+                      </div>
+                    )}
+                  </label>
+                </div>
               </div>
             </div>
           )}
@@ -1829,7 +1955,7 @@ const AdminDashboard = () => {
                   <div className="space-y-3 sm:space-y-4">
                     <h4 className="text-[10px] sm:text-sm font-black text-zinc-900 uppercase tracking-widest">Description</h4>
                     <div 
-                      className="prose prose-zinc max-w-none text-zinc-600 leading-relaxed text-sm sm:text-base break-words"
+                      className="prose prose-zinc max-w-none text-zinc-600 leading-relaxed text-sm sm:text-base break-words whitespace-pre-wrap"
                       dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(previewPost.description) }}
                     />
                   </div>
