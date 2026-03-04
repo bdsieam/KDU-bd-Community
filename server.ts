@@ -198,11 +198,11 @@ async function startServer() {
 
   const upload = multer({
     storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
     fileFilter: (req, file, cb) => {
       const allowedTypes = [".pdf", ".jpg", ".jpeg", ".png", ".webp"];
       const ext = path.extname(file.originalname).toLowerCase();
-      if (allowedTypes.includes(ext)) {
+      if (allowedTypes.includes(ext) || file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf') {
         cb(null, true);
       } else {
         cb(new Error("Only PDF and image files are allowed"));
@@ -216,12 +216,23 @@ async function startServer() {
   // --- API Routes ---
 
   // File Upload Endpoint
-  app.post("/api/upload", upload.single("file"), (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
-    const fileUrl = `/uploads/${req.file.filename}`;
-    res.json({ url: fileUrl });
+  app.post("/api/upload", (req, res) => {
+    upload.single("file")(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        console.error("Multer error:", err);
+        return res.status(400).json({ error: `Upload error: ${err.message}` });
+      } else if (err) {
+        console.error("Upload error:", err);
+        return res.status(400).json({ error: err.message });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      const fileUrl = `/uploads/${req.file.filename}`;
+      res.json({ url: fileUrl });
+    });
   });
 
   // Public: Get Categories

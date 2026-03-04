@@ -133,12 +133,19 @@ const RichTextEditor = ({ value, onChange, placeholder }: { value: string, onCha
         method: 'POST',
         body: formData,
       });
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(errorData.error || `Server responded with ${res.status}`);
+      }
+
       const data = await res.json();
       if (data.url) {
         editor.chain().focus().setImage({ src: data.url }).run();
       }
-    } catch (error) {
-      alert('Failed to upload image');
+    } catch (error: any) {
+      console.error('Image upload error:', error);
+      alert(`Failed to upload image: ${error.message}`);
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
@@ -155,108 +162,125 @@ const RichTextEditor = ({ value, onChange, placeholder }: { value: string, onCha
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   };
 
+  const ToolbarButton = ({ 
+    onClick, 
+    isActive = false, 
+    title, 
+    children, 
+    className = "" 
+  }: { 
+    onClick: () => void, 
+    isActive?: boolean, 
+    title: string, 
+    children: React.ReactNode,
+    className?: string
+  }) => (
+    <button
+      type="button"
+      onMouseDown={(e) => {
+        e.preventDefault(); // Prevent losing focus
+        onClick();
+      }}
+      className={cn(
+        "p-2.5 sm:p-2 rounded-lg hover:bg-zinc-200 transition-colors flex items-center justify-center min-w-[36px] min-h-[36px]", 
+        isActive && "bg-white text-emerald-600 shadow-sm",
+        className
+      )}
+      title={title}
+    >
+      {children}
+    </button>
+  );
+
   return (
     <div className="border border-zinc-200 rounded-xl overflow-hidden bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
-      <div className="bg-zinc-50 border-b border-zinc-200 p-1.5 flex flex-wrap gap-0.5 sticky top-0 z-10">
-        <button
-          type="button"
+      <div className="bg-zinc-50 border-b border-zinc-200 p-2 sm:p-1.5 flex flex-wrap gap-1 sm:gap-0.5 sticky top-0 z-10">
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('bold') && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive('bold')}
           title="Bold"
         >
-          <BoldIcon className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
+          <BoldIcon className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('italic') && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive('italic')}
           title="Italic"
         >
-          <ItalicIcon className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
+          <ItalicIcon className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('underline') && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive('underline')}
           title="Underline"
         >
-          <UnderlineIcon className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
+          <UnderlineIcon className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('heading', { level: 1 }) && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive('heading', { level: 1 })}
           title="Heading 1"
         >
-          <Heading1 className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
+          <Heading1 className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('heading', { level: 2 }) && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive('heading', { level: 2 })}
           title="Heading 2"
         >
-          <Heading2 className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
+          <Heading2 className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('blockquote') && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive('blockquote')}
           title="Quote"
         >
-          <Quote className="w-4 h-4" />
-        </button>
+          <Quote className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
         <div className="w-px h-6 bg-zinc-200 mx-1 self-center" />
-        <button
-          type="button"
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('bulletList') && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive('bulletList')}
           title="Bullet List"
         >
-          <ListIcon className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
+          <ListIcon className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('orderedList') && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive('orderedList')}
           title="Ordered List"
         >
-          <ListOrdered className="w-4 h-4" />
-        </button>
+          <ListOrdered className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
         <div className="w-px h-6 bg-zinc-200 mx-1 self-center" />
-        <button
-          type="button"
+        <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign('left').run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive({ textAlign: 'left' }) && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive({ textAlign: 'left' })}
           title="Align Left"
         >
-          <AlignLeft className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
+          <AlignLeft className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign('center').run()}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive({ textAlign: 'center' }) && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive({ textAlign: 'center' })}
           title="Align Center"
         >
-          <AlignCenter className="w-4 h-4" />
-        </button>
+          <AlignCenter className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
         <div className="w-px h-6 bg-zinc-200 mx-1 self-center" />
-        <button
-          type="button"
+        <ToolbarButton
           onClick={setLink}
-          className={cn("p-2 rounded-lg hover:bg-zinc-200 transition-colors", editor.isActive('link') && "bg-white text-emerald-600 shadow-sm")}
+          isActive={editor.isActive('link')}
           title="Add Link"
         >
-          <LucideLink className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
+          <LucideLink className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={addImage}
-          className="p-2 rounded-lg hover:bg-zinc-200 transition-colors"
           title="Upload Image"
         >
-          <Image className="w-4 h-4" />
-        </button>
+          <Image className="w-4 h-4 sm:w-4 sm:h-4" />
+        </ToolbarButton>
         <input 
           type="file"
           ref={fileInputRef}
@@ -838,17 +862,20 @@ const CategoryPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch('/api/categories')
-      .then(res => res.json())
-      .then(cats => {
+    
+    const fetchCategories = fetch('/api/categories').then(res => res.json());
+    const fetchPosts = fetch(`/api/posts/category/${slug}`).then(res => res.json());
+
+    Promise.all([fetchCategories, fetchPosts])
+      .then(([cats, postsData]) => {
         const found = cats.find((c: Category) => c.slug === slug);
         setCategory(found);
-      });
-
-    fetch(`/api/posts/category/${slug}`)
-      .then(res => res.json())
-      .then(data => {
-        setPosts(data);
+        setPosts(postsData);
+      })
+      .catch(err => {
+        console.error("Failed to fetch category data:", err);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [slug]);
@@ -1111,13 +1138,20 @@ const SubmissionForm = () => {
         method: 'POST',
         body: formData,
       });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(errorData.error || `Server responded with ${res.status}`);
+      }
+
       const data = await res.json();
       if (data.url) {
         setValue('pdf_url', data.url);
         setPdfFile(file);
       }
-    } catch (error) {
-      alert('Failed to upload PDF');
+    } catch (error: any) {
+      console.error('PDF upload error:', error);
+      alert(`Failed to upload PDF: ${error.message}`);
     } finally {
       setUploadingPdf(false);
     }
@@ -1215,7 +1249,7 @@ const SubmissionForm = () => {
               >
                 <option value="">Select a category</option>
                 {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  <option key={cat.id} value={cat.id.toString()}>{cat.name}</option>
                 ))}
               </select>
               {errors.category_id && <span className="text-red-500 text-[10px] font-bold">Category is required</span>}
