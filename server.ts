@@ -305,6 +305,20 @@ async function startServer() {
     }
   });
 
+  // Admin: Bulk Delete Posts
+  app.post("/api/admin/posts/bulk-delete", authenticateToken, async (req, res) => {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: "No IDs provided" });
+    }
+    try {
+      await pool.query("DELETE FROM posts WHERE id IN (?)", [ids]);
+      res.json({ message: "Posts deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete posts" });
+    }
+  });
+
   // Admin: Analytics
   app.get("/api/admin/analytics", authenticateToken, async (req, res) => {
     try {

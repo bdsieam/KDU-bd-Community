@@ -1106,9 +1106,12 @@ const AdminDashboard = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [moderators, setModerators] = useState<any[]>([]);
   const [analytics, setAnalytics] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'pending' | 'approved' | 'notices' | 'categories' | 'moderators' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'pending' | 'approved' | 'notices' | 'categories' | 'moderators' | 'settings' | 'bulk-manage'>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedPostIds, setSelectedPostIds] = useState<number[]>([]);
+  const [selectedBulkCategoryId, setSelectedBulkCategoryId] = useState<number | null>(null);
+  const [previewPost, setPreviewPost] = useState<Post | null>(null);
   
   const [newNotice, setNewNotice] = useState({ content: '', type: 'info' });
   const [editingCategory, setEditingCategory] = useState<Partial<Category> | null>(null);
@@ -1309,6 +1312,28 @@ const AdminDashboard = () => {
     }
   };
 
+  const bulkDeletePosts = async () => {
+    if (selectedPostIds.length === 0) return;
+    if (!confirm(`Are you sure you want to delete ${selectedPostIds.length} selected posts?`)) return;
+    
+    const res = await fetch('/api/admin/posts/bulk-delete', {
+      method: 'POST',
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ids: selectedPostIds })
+    });
+    
+    if (res.ok) {
+      setSelectedPostIds([]);
+      fetchData();
+    } else {
+      const err = await res.json();
+      alert(err.error || 'Failed to delete posts');
+    }
+  };
+
   const filteredPosts = posts.filter(p => {
     const matchesTab = activeTab === 'dashboard' ? true : p.status === activeTab;
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -1321,6 +1346,7 @@ const AdminDashboard = () => {
     { id: 'pending', label: 'Pending Submissions', icon: Clock, count: posts.filter(p => p.status === 'pending').length },
     { id: 'approved', label: 'Approved Content', icon: CheckCircle },
     { id: 'notices', label: 'Community Notices', icon: Bell, count: notices.length },
+    { id: 'bulk-manage', label: 'Bulk Manage', icon: List },
     { id: 'categories', label: 'Categories', icon: FolderTree },
     ...(user.role === 'admin' ? [{ id: 'moderators', label: 'Moderators', icon: Users }] : []),
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -1352,6 +1378,151 @@ const AdminDashboard = () => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+
+      {/* Post Preview Modal */}
+      <AnimatePresence>
+        {previewPost && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setPreviewPost(null)}
+              className="absolute inset-0 bg-zinc-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            >
+              <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-white sticky top-0 z-10">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                    <Eye className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-zinc-900">Post Preview</h3>
+                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Reviewing submission</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setPreviewPost(null)}
+                  className="p-2 hover:bg-zinc-100 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6 text-zinc-400" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-8">
+                <div className="max-w-3xl mx-auto space-y-8">
+                  {previewPost.image_url && (
+                    <div className="aspect-video w-full rounded-[2rem] overflow-hidden bg-zinc-100 border border-zinc-200">
+                      <img 
+                        src={previewPost.image_url} 
+                        alt={previewPost.title}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.src = "https://picsum.photos/seed/error/800/400";
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wider">
+                        {previewPost.category_name}
+                      </span>
+                      <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
+                        Submitted on {new Date(previewPost.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 leading-tight">
+                      {previewPost.title}
+                    </h2>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
+                          <MapPin className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs font-black text-zinc-400 uppercase tracking-widest">Location</span>
+                      </div>
+                      <p className="text-zinc-900 font-bold">{previewPost.location || 'Not specified'}</p>
+                    </div>
+                    <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
+                          <PhoneCall className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs font-black text-zinc-400 uppercase tracking-widest">Contact</span>
+                      </div>
+                      <p className="text-zinc-900 font-bold">{previewPost.contact || 'Not specified'}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-black text-zinc-900 uppercase tracking-widest">Description</h4>
+                    <div 
+                      className="prose prose-zinc max-w-none text-zinc-600 leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(previewPost.description) }}
+                    />
+                  </div>
+
+                  {previewPost.map_link && (
+                    <a 
+                      href={previewPost.map_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center w-full p-4 bg-zinc-900 text-white rounded-2xl font-black hover:bg-zinc-800 transition-all group"
+                    >
+                      <Map className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                      View on Google Maps
+                    </a>
+                  )}
+
+                  <div className="pt-8 border-t border-zinc-100">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-zinc-100 rounded-full flex items-center justify-center text-zinc-400 font-bold">
+                        {previewPost.submitted_by?.[0] || 'A'}
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-zinc-400 uppercase tracking-widest">Submitted By</p>
+                        <p className="font-bold text-zinc-900">{previewPost.submitted_by || 'Anonymous'}</p>
+                        <p className="text-xs text-zinc-500">{previewPost.email || 'No email provided'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 border-t border-zinc-100 bg-zinc-50 flex items-center justify-end space-x-4">
+                <button 
+                  onClick={() => setPreviewPost(null)}
+                  className="px-6 py-3 text-zinc-500 font-bold hover:text-zinc-900 transition-colors"
+                >
+                  Close Preview
+                </button>
+                {previewPost.status === 'pending' && (
+                  <button 
+                    onClick={() => {
+                      updateStatus(previewPost.id, 'approved');
+                      setPreviewPost(null);
+                    }}
+                    className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-black hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20"
+                  >
+                    Approve Submission
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Sidebar */}
       <aside className={cn(
@@ -1608,8 +1779,13 @@ const AdminDashboard = () => {
                       filteredPosts.map((post) => (
                         <tr key={post.id} className="hover:bg-zinc-50 transition-colors group">
                           <td className="px-8 py-6">
-                            <div className="font-black text-zinc-900 text-base mb-1 line-clamp-1">{post.title}</div>
-                            <div className="text-xs text-zinc-500 line-clamp-1 max-w-md">{post.description.replace(/<[^>]*>/g, '')}</div>
+                            <button 
+                              onClick={() => setPreviewPost(post)}
+                              className="text-left group/title"
+                            >
+                              <div className="font-black text-zinc-900 text-base mb-1 line-clamp-1 group-hover/title:text-emerald-600 transition-colors">{post.title}</div>
+                              <div className="text-xs text-zinc-500 line-clamp-1 max-w-md">{post.description.replace(/<[^>]*>/g, '')}</div>
+                            </button>
                             <div className="mt-2 flex items-center text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
                               <Clock className="w-3 h-3 mr-1" />
                               {new Date(post.created_at).toLocaleDateString()}
@@ -1747,6 +1923,148 @@ const AdminDashboard = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {activeTab === 'bulk-manage' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center space-x-4">
+                  {selectedBulkCategoryId && (
+                    <button 
+                      onClick={() => setSelectedBulkCategoryId(null)}
+                      className="p-3 bg-white border border-zinc-200 rounded-xl text-zinc-500 hover:text-emerald-600 transition-all shadow-sm"
+                    >
+                      <ArrowLeft className="w-5 h-5" />
+                    </button>
+                  )}
+                  <div>
+                    <h3 className="text-2xl font-black text-zinc-900">Bulk Manage Posts</h3>
+                    <p className="text-sm text-zinc-500">
+                      {selectedBulkCategoryId 
+                        ? `Managing posts for ${categories.find(c => c.id === selectedBulkCategoryId)?.name}`
+                        : 'Select a category to manage its posts'}
+                    </p>
+                  </div>
+                </div>
+                {selectedPostIds.length > 0 && (
+                  <button 
+                    onClick={bulkDeletePosts}
+                    className="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-2xl font-black hover:bg-red-700 transition-all shadow-xl shadow-red-600/20 active:scale-95"
+                  >
+                    <Trash2 className="w-5 h-5 mr-2" />
+                    Delete Selected ({selectedPostIds.length})
+                  </button>
+                )}
+              </div>
+
+              {!selectedBulkCategoryId ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {categories.map(category => {
+                    const count = posts.filter(p => p.category_id === category.id).length;
+                    return (
+                      <button
+                        key={category.id}
+                        onClick={() => setSelectedBulkCategoryId(category.id)}
+                        className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm hover:shadow-xl hover:border-emerald-200 transition-all text-left group"
+                      >
+                        <div className="flex items-center justify-between mb-6">
+                          <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            {IconMap[category.icon] || <FileText className="w-7 h-7" />}
+                          </div>
+                          <ChevronRight className="w-6 h-6 text-zinc-300 group-hover:text-emerald-600 transition-colors" />
+                        </div>
+                        <h4 className="text-xl font-black text-zinc-900 mb-1">{category.name}</h4>
+                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">{count} Total Posts</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="space-y-8">
+                  {(() => {
+                    const category = categories.find(c => c.id === selectedBulkCategoryId);
+                    if (!category) return null;
+                    const categoryPosts = posts.filter(p => p.category_id === category.id);
+                    
+                    const allCategorySelected = categoryPosts.length > 0 && categoryPosts.every(p => selectedPostIds.includes(p.id));
+
+                    return (
+                      <div className="bg-white border border-zinc-200 rounded-[2.5rem] overflow-hidden shadow-sm">
+                        <div className="p-6 bg-zinc-50 border-b border-zinc-100 flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                              {IconMap[category.icon] || <FileText className="w-5 h-5" />}
+                            </div>
+                            <div>
+                              <h4 className="font-black text-zinc-900">{category.name}</h4>
+                              <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">{categoryPosts.length} Posts</p>
+                            </div>
+                          </div>
+                          <label className="flex items-center space-x-2 cursor-pointer group">
+                            <span className="text-xs font-bold text-zinc-500 group-hover:text-emerald-600 transition-colors">Select All in Category</span>
+                            <input 
+                              type="checkbox"
+                              checked={allCategorySelected}
+                              onChange={(e) => {
+                                const ids = categoryPosts.map(p => p.id);
+                                if (e.target.checked) {
+                                  setSelectedPostIds(prev => Array.from(new Set([...prev, ...ids])));
+                                } else {
+                                  setSelectedPostIds(prev => prev.filter(id => !ids.includes(id)));
+                                }
+                              }}
+                              className="w-5 h-5 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500"
+                            />
+                          </label>
+                        </div>
+                        <div className="divide-y divide-zinc-100">
+                          {categoryPosts.length === 0 ? (
+                            <div className="p-12 text-center text-zinc-400 font-bold">No posts in this category</div>
+                          ) : (
+                            categoryPosts.map(post => (
+                              <div 
+                                key={post.id} 
+                                className={cn(
+                                  "flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors group",
+                                  selectedPostIds.includes(post.id) ? "bg-emerald-50/30" : ""
+                                )}
+                              >
+                                <div className="flex items-center space-x-4">
+                                  <input 
+                                    type="checkbox"
+                                    checked={selectedPostIds.includes(post.id)}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setSelectedPostIds(prev => [...prev, post.id]);
+                                      } else {
+                                        setSelectedPostIds(prev => prev.filter(id => id !== post.id));
+                                      }
+                                    }}
+                                    className="w-5 h-5 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                                  />
+                                  <button 
+                                    onClick={() => setPreviewPost(post)}
+                                    className="text-left group/title"
+                                  >
+                                    <p className="font-bold text-zinc-900 text-sm group-hover/title:text-emerald-600 transition-colors">{post.title}</p>
+                                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
+                                      Status: <span className={post.status === 'approved' ? 'text-emerald-600' : 'text-amber-600'}>{post.status}</span>
+                                    </p>
+                                  </button>
+                                </div>
+                                <div className="text-[10px] text-zinc-400 font-bold">
+                                  {new Date(post.created_at).toLocaleDateString()}
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
             </div>
           )}
 
