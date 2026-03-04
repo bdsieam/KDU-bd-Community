@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { 
-  FileText, Briefcase, CreditCard, Stethoscope, MapPin, Utensils, 
+  Briefcase, CreditCard, Stethoscope, MapPin, Utensils, 
   Beef, Clock, Smartphone, Bus, GraduationCap, PhoneCall, 
-  Search, Plus, LogIn, LayoutDashboard, Check, X, Trash2, Edit2,
-  ChevronRight, ArrowLeft, Menu, Bell, Info, Send,
+  Search, Plus, LogIn, Check, X, Trash2, Edit2,
+  ChevronRight, ArrowLeft, Menu, Info, Send,
   Home, User, Users, Settings, Mail, Calendar, Camera, Music, Video, Image, Map, 
   Book, Coffee, ShoppingBag, Heart, Star, Shield, Zap, Globe, Cloud, 
   Moon, Sun, Umbrella, Anchor, Award, Bike, Car, Plane, Train, 
-  Truck, Activity, AlertCircle, AlertTriangle, Archive, AtSign, BarChart, 
+  Truck, Activity, AlertCircle, AlertTriangle, Archive, AtSign, BarChart,
+  LayoutDashboard, FileText, Bell, FolderTree, LogOut,
   Battery, Bluetooth, Box, CameraOff, Cast, CheckCircle, Clipboard, 
   Code, Compass, Cpu, Database, DollarSign, Download, Droplet, Eye, 
   Facebook, FastForward, Feather, File, Filter, Flag, Folder, Gift, 
@@ -227,13 +228,18 @@ const Navbar = ({ pendingCount }: { pendingCount?: number }) => {
     <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-zinc-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-600/20 group-hover:scale-110 transition-transform">
-              K
-            </div>
+          <Link to="/" className="flex items-center space-x-2 sm:space-x-3 group">
+            <img 
+              src="/logo.png" 
+              alt="KDU Community Logo" 
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain group-hover:scale-110 transition-transform"
+              onError={(e) => {
+                e.currentTarget.src = "https://picsum.photos/seed/community-logo/100/100";
+              }}
+            />
             <div className="flex flex-col">
-              <span className="font-bold text-zinc-900 leading-none">KDU Community</span>
-              <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest">Bangladeshi Students</span>
+              <span className="font-bold text-zinc-900 leading-none text-sm sm:text-base">KDU Community</span>
+              <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold uppercase tracking-widest">Bangladeshi Students</span>
             </div>
           </Link>
 
@@ -326,7 +332,7 @@ const HomePage = () => {
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-7xl font-black text-zinc-900 mb-6 tracking-tight"
+              className="text-4xl sm:text-5xl md:text-7xl font-black text-zinc-900 mb-4 sm:mb-6 tracking-tight px-2"
             >
               Everything you need <br />
               <span className="text-emerald-600">in South Korea.</span>
@@ -335,7 +341,7 @@ const HomePage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-zinc-600 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+              className="text-zinc-600 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-4"
             >
               A collaborative platform for Bangladeshi students at Kyungdong University. 
               Find visa guides, jobs, halal food, and more.
@@ -348,14 +354,14 @@ const HomePage = () => {
               className="max-w-2xl mx-auto relative group"
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative">
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 w-6 h-6" />
+              <div className="relative px-4 sm:px-0">
+                <Search className="absolute left-8 sm:left-6 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5 sm:w-6 sm:h-6" />
                 <input 
                   type="text" 
                   placeholder="Search for visa, halal food, jobs..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-16 pr-6 py-6 bg-white border border-zinc-200 rounded-2xl shadow-2xl shadow-emerald-900/5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-lg"
+                  className="w-full pl-14 sm:pl-16 pr-6 py-4 sm:py-6 bg-white border border-zinc-200 rounded-2xl shadow-2xl shadow-emerald-900/5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-base sm:text-lg"
                 />
               </div>
             </motion.div>
@@ -410,7 +416,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-10">
           <AnimatePresence mode="popLayout">
             {filteredCategories.map((cat, idx) => (
               <motion.div
@@ -425,13 +431,13 @@ const HomePage = () => {
                   to={`/category/${cat.slug}`}
                   className="group flex flex-col items-center text-center"
                 >
-                  <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-[1.75rem] shadow-lg shadow-zinc-200/50 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:shadow-emerald-500/20 transition-all duration-300 border border-zinc-100 group-hover:border-emerald-200 relative overflow-hidden">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-white rounded-2xl sm:rounded-[1.75rem] shadow-lg shadow-zinc-200/50 flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 group-hover:shadow-emerald-500/20 transition-all duration-300 border border-zinc-100 group-hover:border-emerald-200 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="text-emerald-600 group-hover:text-emerald-500 transition-colors relative z-10 scale-125">
+                    <div className="text-emerald-600 group-hover:text-emerald-500 transition-colors relative z-10 scale-110 sm:scale-125">
                       {IconMap[cat.icon] || <Info />}
                     </div>
                   </div>
-                  <span className="text-sm md:text-base font-bold text-zinc-700 group-hover:text-emerald-600 transition-colors line-clamp-2 px-1">
+                  <span className="text-xs sm:text-sm md:text-base font-bold text-zinc-700 group-hover:text-emerald-600 transition-colors line-clamp-2 px-1">
                     {cat.name}
                   </span>
                 </Link>
@@ -538,13 +544,13 @@ const PrayerTimes = () => {
         </div>
         
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
             {[1, 2, 3, 4, 5].map(i => (
-              <div key={i} className="h-24 bg-zinc-100 animate-pulse rounded-2xl"></div>
+              <div key={i} className="h-20 sm:h-24 bg-zinc-100 animate-pulse rounded-xl sm:rounded-2xl"></div>
             ))}
           </div>
         ) : timings ? (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
             {[
               { name: "Fajr", time: timings.Fajr },
               { name: "Dhuhr", time: timings.Dhuhr },
@@ -552,9 +558,9 @@ const PrayerTimes = () => {
               { name: "Maghrib", time: timings.Maghrib },
               { name: "Isha", time: timings.Isha },
             ].map((p) => (
-              <div key={p.name} className="bg-white border border-zinc-200 p-6 rounded-2xl text-center shadow-sm hover:shadow-md transition-shadow">
-                <div className="text-emerald-600 font-bold text-xs uppercase tracking-widest mb-2">{p.name}</div>
-                <div className="text-2xl font-black text-zinc-900">{p.time}</div>
+              <div key={p.name} className="bg-white border border-zinc-200 p-4 sm:p-6 rounded-xl sm:rounded-2xl text-center shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-emerald-600 font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-1 sm:mb-2">{p.name}</div>
+                <div className="text-xl sm:text-2xl font-black text-zinc-900">{p.time}</div>
               </div>
             ))}
           </div>
@@ -652,15 +658,15 @@ const CategoryPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <Link to="/" className="inline-flex items-center text-zinc-500 hover:text-emerald-600 transition-colors">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 sm:mb-8 gap-4">
+        <Link to="/" className="inline-flex items-center text-zinc-500 hover:text-emerald-600 transition-colors text-sm sm:text-base">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home
         </Link>
         {slug !== 'prayer' && (
           <Link 
             to={`/add?category=${category?.id}`} 
-            className="inline-flex items-center px-6 py-3 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
+            className="inline-flex items-center justify-center px-6 py-3 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 active:scale-95 text-sm sm:text-base"
           >
             <Plus className="w-5 h-5 mr-2" />
             Add {slug === 'emergency' ? 'Contact' : 'Information'}
@@ -668,14 +674,14 @@ const CategoryPage = () => {
         )}
       </div>
 
-      <div className="mb-12">
-        <div className="flex items-center space-x-4 mb-4">
-          <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
+      <div className="mb-8 sm:mb-12">
+        <div className="flex items-center space-x-3 sm:space-x-4 mb-3 sm:mb-4">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center scale-90 sm:scale-100">
             {category && IconMap[category.icon]}
           </div>
-          <h1 className="text-4xl font-black text-zinc-900">{category?.name}</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-zinc-900">{category?.name}</h1>
         </div>
-        <p className="text-zinc-600 text-lg max-w-3xl">{category?.description}</p>
+        <p className="text-zinc-600 text-sm sm:text-base md:text-lg max-w-3xl">{category?.description}</p>
       </div>
 
       {slug === 'emergency' && (
@@ -712,14 +718,14 @@ const CategoryPage = () => {
         </motion.div>
       )}
 
-      <div className="max-w-xl mb-12 relative">
+      <div className="max-w-xl mb-8 sm:mb-12 relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5" />
         <input 
           type="text" 
           placeholder={`Search in ${category?.name}...`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-12 pr-4 py-4 bg-white border border-zinc-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+          className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border border-zinc-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm sm:text-base"
         />
       </div>
 
@@ -924,12 +930,12 @@ const SubmissionForm = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <div className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-zinc-200/50">
-        <div className="mb-10">
-          <h1 className="text-4xl font-black text-zinc-900 mb-3">
+      <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-[2.5rem] p-6 sm:p-8 md:p-12 shadow-xl shadow-zinc-200/50">
+        <div className="mb-8 sm:mb-10">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-zinc-900 mb-2 sm:mb-3">
             {isEmergency ? 'Add Emergency Contact' : 'Share Your Knowledge'}
           </h1>
-          <p className="text-zinc-600 text-lg">
+          <p className="text-zinc-600 text-sm sm:text-base md:text-lg">
             {isEmergency 
               ? 'Add a new emergency number or important service contact for the community.' 
               : 'Help fellow students by writing a detailed guide or sharing a useful place.'}
@@ -1057,13 +1063,13 @@ const AdminLogin = () => {
 
   return (
     <div className="max-w-md mx-auto px-4 py-24">
-      <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
+      <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-sm">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl mx-auto mb-4">
             K
           </div>
-          <h1 className="text-2xl font-bold text-zinc-900">Admin Login</h1>
-          <p className="text-zinc-500">Access the community dashboard</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-zinc-900">Admin Login</h1>
+          <p className="text-zinc-500 text-sm sm:text-base">Access the community dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -1100,7 +1106,10 @@ const AdminDashboard = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [moderators, setModerators] = useState<any[]>([]);
   const [analytics, setAnalytics] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'notices' | 'categories' | 'moderators' | 'settings'>('pending');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'pending' | 'approved' | 'notices' | 'categories' | 'moderators' | 'settings'>('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  
   const [newNotice, setNewNotice] = useState({ content: '', type: 'info' });
   const [editingCategory, setEditingCategory] = useState<Partial<Category> | null>(null);
   const [newModerator, setNewModerator] = useState({ username: '', password: '', name: '' });
@@ -1119,32 +1128,36 @@ const AdminDashboard = () => {
 
   const fetchData = async () => {
     const headers = { 'Authorization': `Bearer ${token}` };
-    const requests = [
-      fetch('/api/admin/posts', { headers }),
-      fetch('/api/admin/analytics', { headers }),
-      fetch('/api/admin/notices', { headers }),
-      fetch('/api/categories')
-    ];
+    try {
+      const requests = [
+        fetch('/api/admin/posts', { headers }),
+        fetch('/api/admin/analytics', { headers }),
+        fetch('/api/admin/notices', { headers }),
+        fetch('/api/categories')
+      ];
 
-    if (user.role === 'admin') {
-      requests.push(fetch('/api/admin/moderators', { headers }));
-    }
+      if (user.role === 'admin') {
+        requests.push(fetch('/api/admin/moderators', { headers }));
+      }
 
-    const responses = await Promise.all(requests);
+      const responses = await Promise.all(requests);
 
-    if (responses[0].status === 401 || responses[0].status === 403) {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
-      navigate('/login');
-      return;
-    }
+      if (responses[0].status === 401 || responses[0].status === 403) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        navigate('/login');
+        return;
+      }
 
-    setPosts(await responses[0].json());
-    setAnalytics(await responses[1].json());
-    setNotices(await responses[2].json());
-    setCategories(await responses[3].json());
-    if (user.role === 'admin' && responses[4]) {
-      setModerators(await responses[4].json());
+      setPosts(await responses[0].json());
+      setAnalytics(await responses[1].json());
+      setNotices(await responses[2].json());
+      setCategories(await responses[3].json());
+      if (user.role === 'admin' && responses[4]) {
+        setModerators(await responses[4].json());
+      }
+    } catch (error) {
+      console.error('Error fetching admin data:', error);
     }
   };
 
@@ -1296,451 +1309,688 @@ const AdminDashboard = () => {
     }
   };
 
-  const filteredPosts = posts.filter(p => p.status === activeTab);
+  const filteredPosts = posts.filter(p => {
+    const matchesTab = activeTab === 'dashboard' ? true : p.status === activeTab;
+    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         p.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesTab && matchesSearch;
+  });
+
+  const menuItems = [
+    { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
+    { id: 'pending', label: 'Pending Submissions', icon: Clock, count: posts.filter(p => p.status === 'pending').length },
+    { id: 'approved', label: 'Approved Content', icon: CheckCircle },
+    { id: 'notices', label: 'Community Notices', icon: Bell, count: notices.length },
+    { id: 'categories', label: 'Categories', icon: FolderTree },
+    ...(user.role === 'admin' ? [{ id: 'moderators', label: 'Moderators', icon: Users }] : []),
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ];
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    navigate('/login');
+  };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-zinc-900">Admin Dashboard</h1>
-          <p className="text-zinc-500">Manage community contributions and content</p>
+    <div className="min-h-screen bg-zinc-50 flex flex-col md:flex-row">
+      {/* Mobile Header */}
+      <div className="md:hidden bg-white border-b border-zinc-200 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">K</div>
+          <span className="font-bold text-zinc-900">Admin Panel</span>
         </div>
-        <button 
-          onClick={() => { localStorage.removeItem('adminToken'); navigate('/login'); }}
-          className="px-4 py-2 text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors"
-        >
-          Logout
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 text-zinc-500">
+          {sidebarOpen ? <X /> : <Menu />}
         </button>
       </div>
 
-      {analytics && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm">
-            <p className="text-zinc-500 text-sm mb-1">Total Posts</p>
-            <p className="text-3xl font-bold text-zinc-900">{analytics.totalPosts}</p>
-          </div>
-          <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm">
-            <p className="text-zinc-500 text-sm mb-1">Pending Review</p>
-            <p className="text-3xl font-bold text-emerald-600">{analytics.pendingPosts}</p>
-          </div>
-          <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm">
-            <p className="text-zinc-500 text-sm mb-1">Categories</p>
-            <p className="text-3xl font-bold text-zinc-900">{analytics.categoryCounts.length}</p>
-          </div>
-          <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm">
-            <p className="text-zinc-500 text-sm mb-1">Active Users</p>
-            <p className="text-3xl font-bold text-zinc-900">124</p>
-          </div>
-        </div>
+      {/* Sidebar Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
-      <div className="bg-white border border-zinc-200 rounded-3xl overflow-hidden shadow-sm">
-        <div className="flex border-b border-zinc-200">
-          <button 
-            onClick={() => setActiveTab('pending')}
-            className={cn(
-              "flex-1 py-4 font-bold text-sm transition-colors",
-              activeTab === 'pending' ? "text-emerald-600 border-b-2 border-emerald-600" : "text-zinc-500 hover:text-zinc-900"
-            )}
-          >
-            Pending Submissions ({posts.filter(p => p.status === 'pending').length})
-          </button>
-          <button 
-            onClick={() => setActiveTab('approved')}
-            className={cn(
-              "flex-1 py-4 font-bold text-sm transition-colors",
-              activeTab === 'approved' ? "text-emerald-600 border-b-2 border-emerald-600" : "text-zinc-500 hover:text-zinc-900"
-            )}
-          >
-            Approved Posts ({posts.filter(p => p.status === 'approved').length})
-          </button>
-          <button 
-            onClick={() => setActiveTab('notices')}
-            className={cn(
-              "flex-1 py-4 font-bold text-sm transition-colors",
-              activeTab === 'notices' ? "text-emerald-600 border-b-2 border-emerald-600" : "text-zinc-500 hover:text-zinc-900"
-            )}
-          >
-            Manage Notices ({notices.length})
-          </button>
-          <button 
-            onClick={() => setActiveTab('categories')}
-            className={cn(
-              "flex-1 py-4 font-bold text-sm transition-colors",
-              activeTab === 'categories' ? "text-emerald-600 border-b-2 border-emerald-600" : "text-zinc-500 hover:text-zinc-900"
-            )}
-          >
-            Categories ({categories.length})
-          </button>
-          {user.role === 'admin' && (
-            <button 
-              onClick={() => setActiveTab('moderators')}
-              className={cn(
-                "flex-1 py-4 font-bold text-sm transition-colors",
-                activeTab === 'moderators' ? "text-emerald-600 border-b-2 border-emerald-600" : "text-zinc-500 hover:text-zinc-900"
-              )}
-            >
-              Moderators ({moderators.length})
-            </button>
-          )}
-          <button 
-            onClick={() => setActiveTab('settings')}
-            className={cn(
-              "flex-1 py-4 font-bold text-sm transition-colors",
-              activeTab === 'settings' ? "text-emerald-600 border-b-2 border-emerald-600" : "text-zinc-500 hover:text-zinc-900"
-            )}
-          >
-            Settings
-          </button>
+      {/* Sidebar */}
+      <aside className={cn(
+        "fixed md:sticky top-0 left-0 h-screen w-72 bg-white border-r border-zinc-200 z-50 transition-transform duration-300 md:translate-x-0",
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+        <div className="h-full flex flex-col">
+          <div className="p-6 border-b border-zinc-100 hidden md:block">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-600/20">
+                K
+              </div>
+              <div>
+                <h2 className="font-black text-zinc-900 leading-none">KDU Community</h2>
+                <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mt-1">Admin Dashboard</p>
+              </div>
+            </div>
+          </div>
+
+          <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => { setActiveTab(item.id as any); setSidebarOpen(false); }}
+                className={cn(
+                  "w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all group",
+                  activeTab === item.id 
+                    ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20" 
+                    : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
+                )}
+              >
+                <div className="flex items-center">
+                  <item.icon className={cn("w-5 h-5 mr-3", activeTab === item.id ? "text-white" : "text-zinc-400 group-hover:text-emerald-600")} />
+                  <span className="font-bold text-sm">{item.label}</span>
+                </div>
+                {item.count !== undefined && item.count > 0 && (
+                  <span className={cn(
+                    "px-2 py-0.5 rounded-full text-[10px] font-black",
+                    activeTab === item.id ? "bg-white text-emerald-600" : "bg-emerald-100 text-emerald-600"
+                  )}>
+                    {item.count}
+                  </span>
+                )}
+              </button>
+            ))}
+          </nav>
+
+          <div className="p-4 border-t border-zinc-100">
+            <div className="bg-zinc-50 rounded-2xl p-4 mb-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-10 h-10 bg-zinc-200 rounded-full flex items-center justify-center text-zinc-500">
+                  <User className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="font-bold text-zinc-900 text-sm">{user.name || 'Moderator'}</p>
+                  <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">{user.role}</p>
+                </div>
+              </div>
+              <button 
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center px-4 py-2 bg-white border border-zinc-200 rounded-xl text-red-600 text-xs font-bold hover:bg-red-50 transition-colors"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </button>
+            </div>
+          </div>
         </div>
+      </aside>
 
-        {activeTab === 'moderators' && user.role === 'admin' ? (
-          <div className="p-8">
-            <form onSubmit={createModerator} className="mb-10 p-6 bg-zinc-50 rounded-2xl border border-zinc-200">
-              <h3 className="text-lg font-bold mb-4">Create New Moderator</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      {/* Main Content */}
+      <main className="flex-1 min-w-0 overflow-y-auto">
+        <header className="bg-white border-b border-zinc-200 px-8 py-6 sticky top-0 z-30 hidden md:block">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-black text-zinc-900">
+                {menuItems.find(i => i.id === activeTab)?.label}
+              </h1>
+              <p className="text-sm text-zinc-500">Welcome back, {user.name}!</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 w-4 h-4" />
                 <input 
-                  value={newModerator.name}
-                  onChange={(e) => setNewModerator({ ...newModerator, name: e.target.value })}
-                  placeholder="Full Name"
-                  className="px-4 py-3 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                  required
-                />
-                <input 
-                  value={newModerator.username}
-                  onChange={(e) => setNewModerator({ ...newModerator, username: e.target.value })}
-                  placeholder="Username"
-                  className="px-4 py-3 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                  required
-                />
-                <input 
-                  type="password"
-                  value={newModerator.password}
-                  onChange={(e) => setNewModerator({ ...newModerator, password: e.target.value })}
-                  placeholder="Password"
-                  className="px-4 py-3 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                  required
+                  type="text" 
+                  placeholder="Search everything..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-4 py-2 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none w-64 transition-all"
                 />
               </div>
-              <button 
-                type="submit"
-                className="w-full py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors"
-              >
-                Create Moderator Account
+              <button className="p-2 text-zinc-400 hover:text-emerald-600 transition-colors relative">
+                <Bell className="w-6 h-6" />
+                {notices.length > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />}
               </button>
-            </form>
-
-            <div className="space-y-4">
-              {moderators.map((mod) => (
-                <div key={mod.id} className="flex items-center justify-between p-4 bg-white border border-zinc-200 rounded-2xl">
-                  <div>
-                    <div className="font-bold text-zinc-900">{mod.name}</div>
-                    <div className="text-sm text-zinc-500">@{mod.username}</div>
-                  </div>
-                  <button 
-                    onClick={() => deleteModerator(mod.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </div>
-              ))}
-              {moderators.length === 0 && (
-                <div className="text-center py-8 text-zinc-500">No moderators created yet.</div>
-              )}
             </div>
           </div>
-        ) : activeTab === 'settings' ? (
-          <div className="p-8 max-w-md mx-auto">
-            <h3 className="text-xl font-bold mb-6">Account Settings</h3>
-            <form onSubmit={changePassword} className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-zinc-700">Current Password</label>
-                <input 
-                  type="password"
-                  value={passwordForm.currentPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-zinc-700">New Password</label>
-                <input 
-                  type="password"
-                  value={passwordForm.newPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-zinc-700">Confirm New Password</label>
-                <input 
-                  type="password"
-                  value={passwordForm.confirmPassword}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                  required
-                />
-              </div>
-              <button 
-                type="submit"
-                className="w-full py-4 bg-zinc-900 text-white rounded-2xl font-bold hover:bg-zinc-800 transition-colors"
-              >
-                Update Password
-              </button>
-            </form>
-          </div>
-        ) : activeTab === 'notices' ? (
-          <div className="p-8">
-            <form onSubmit={createNotice} className="mb-10 p-6 bg-zinc-50 rounded-2xl border border-zinc-200">
-              <h3 className="text-lg font-bold mb-4">Create New Notice</h3>
-              <div className="space-y-4">
-                <textarea 
-                  value={newNotice.content}
-                  onChange={(e) => setNewNotice({ ...newNotice, content: e.target.value })}
-                  placeholder="Enter notice content..."
-                  className="w-full px-4 py-3 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                  rows={3}
-                />
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <select 
-                    value={newNotice.type}
-                    onChange={(e) => setNewNotice({ ...newNotice, type: e.target.value as any })}
-                    className="px-4 py-3 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                  >
-                    <option value="info">Info (Blue)</option>
-                    <option value="warning">Warning (Amber)</option>
-                    <option value="success">Success (Emerald)</option>
-                  </select>
-                  <button 
-                    type="submit"
-                    className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors"
-                  >
-                    Post Notice
-                  </button>
-                </div>
-              </div>
-            </form>
+        </header>
 
-            <div className="space-y-4">
-              {notices.map((notice) => (
-                <div key={notice.id} className="flex items-center justify-between p-4 bg-white border border-zinc-200 rounded-2xl">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className={cn(
-                        "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase",
-                        notice.type === 'warning' ? "bg-amber-100 text-amber-700" : 
-                        notice.type === 'success' ? "bg-emerald-100 text-emerald-700" :
-                        "bg-blue-100 text-blue-700"
-                      )}>
-                        {notice.type}
-                      </span>
-                      <span className="text-xs text-zinc-400">
-                        {new Date(notice.created_at).toLocaleString()}
-                      </span>
+        <div className="p-4 md:p-8">
+          {activeTab === 'dashboard' && (
+            <div className="space-y-8 animate-in fade-in duration-500">
+              {analytics && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[
+                    { label: 'Total Posts', value: analytics.totalPosts, icon: FileText, color: 'emerald' },
+                    { label: 'Pending Review', value: analytics.pendingPosts, icon: Clock, color: 'amber' },
+                    { label: 'Categories', value: analytics.categoryCounts.length, icon: FolderTree, color: 'blue' },
+                    { label: 'Active Notices', value: notices.filter(n => n.active).length, icon: Bell, color: 'purple' },
+                  ].map((stat) => (
+                    <div key={stat.label} className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={cn(
+                          "w-12 h-12 rounded-2xl flex items-center justify-center",
+                          stat.color === 'emerald' ? "bg-emerald-50 text-emerald-600" :
+                          stat.color === 'amber' ? "bg-amber-50 text-amber-600" :
+                          stat.color === 'blue' ? "bg-blue-50 text-blue-600" :
+                          "bg-purple-50 text-purple-600"
+                        )}>
+                          <stat.icon className="w-6 h-6" />
+                        </div>
+                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Live</span>
+                      </div>
+                      <p className="text-zinc-500 text-sm font-bold">{stat.label}</p>
+                      <p className="text-4xl font-black text-zinc-900 mt-1">{stat.value}</p>
                     </div>
-                    <p className="text-zinc-700">{notice.content}</p>
-                  </div>
-                  <div className="flex items-center space-x-2 ml-4">
-                    <button 
-                      onClick={() => toggleNotice(notice.id)}
-                      className={cn(
-                        "px-3 py-1.5 rounded-lg text-xs font-bold transition-colors",
-                        notice.active ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100" : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
-                      )}
-                    >
-                      {notice.active ? 'Active' : 'Hidden'}
-                    </button>
-                    <button 
-                      onClick={() => deleteNotice(notice.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        ) : activeTab === 'categories' ? (
-          <div className="p-8">
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="text-xl font-bold">Manage Categories</h3>
-              <button 
-                onClick={() => setEditingCategory({ name: '', slug: '', icon: 'FileText', description: '' })}
-                className="px-4 py-2 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors flex items-center"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Category
-              </button>
-            </div>
+              )}
 
-            {editingCategory && (
-              <form onSubmit={saveCategory} className="mb-10 p-6 bg-zinc-50 rounded-2xl border border-zinc-200 animate-in fade-in slide-in-from-top-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-bold">{editingCategory.id ? 'Edit Category' : 'New Category'}</h4>
-                  <button type="button" onClick={() => setEditingCategory(null)} className="text-zinc-400 hover:text-zinc-600">
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-500 uppercase">Name</label>
-                    <input 
-                      value={editingCategory.name}
-                      onChange={e => setEditingCategory({ ...editingCategory, name: e.target.value })}
-                      className="w-full px-4 py-2 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                      placeholder="e.g., New Service"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-500 uppercase">Slug (URL)</label>
-                    <input 
-                      value={editingCategory.slug}
-                      onChange={e => setEditingCategory({ ...editingCategory, slug: e.target.value })}
-                      className="w-full px-4 py-2 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                      placeholder="e.g., new-service"
-                    />
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <label className="text-xs font-bold text-zinc-500 uppercase">Select Icon</label>
-                    <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 p-4 bg-white border border-zinc-200 rounded-xl max-h-60 overflow-y-auto">
-                      {Object.keys(IconMap).map(iconName => (
-                        <button
-                          key={iconName}
-                          type="button"
-                          onClick={() => setEditingCategory({ ...editingCategory, icon: iconName })}
-                          className={cn(
-                            "p-2 rounded-lg flex items-center justify-center transition-all hover:bg-emerald-50 hover:text-emerald-600",
-                            editingCategory.icon === iconName ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20" : "text-zinc-400"
-                          )}
-                          title={iconName}
-                        >
-                          <div className="w-5 h-5">
-                            {IconMap[iconName]}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-8">
+                  <div className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 shadow-sm">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-xl font-black text-zinc-900">Recent Submissions</h3>
+                      <button onClick={() => setActiveTab('pending')} className="text-emerald-600 font-bold text-sm hover:underline">View All</button>
+                    </div>
+                    <div className="space-y-4">
+                      {posts.slice(0, 5).map((post) => (
+                        <div key={post.id} className="flex items-center justify-between p-4 bg-zinc-50 rounded-2xl border border-zinc-100 group hover:border-emerald-200 transition-all">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
+                              <FileText className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <p className="font-bold text-zinc-900 text-sm line-clamp-1">{post.title}</p>
+                              <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">{post.category_name} â€¢ {new Date(post.created_at).toLocaleDateString()}</p>
+                            </div>
                           </div>
-                        </button>
+                          <div className="flex items-center space-x-2">
+                            <span className={cn(
+                              "px-2 py-1 rounded-lg text-[10px] font-black uppercase",
+                              post.status === 'approved' ? "bg-emerald-100 text-emerald-600" : "bg-amber-100 text-amber-600"
+                            )}>
+                              {post.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                      {posts.length === 0 && <p className="text-center py-8 text-zinc-400 font-bold">No recent submissions</p>}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-8">
+                  <div className="bg-zinc-900 rounded-[2.5rem] p-8 text-white shadow-xl shadow-zinc-900/20">
+                    <h3 className="text-xl font-black mb-6">Quick Actions</h3>
+                    <div className="grid grid-cols-1 gap-3">
+                      <button 
+                        onClick={() => setActiveTab('notices')}
+                        className="w-full flex items-center p-4 bg-white/10 rounded-2xl hover:bg-white/20 transition-all group"
+                      >
+                        <Bell className="w-5 h-5 mr-3 text-emerald-400 group-hover:scale-110 transition-transform" />
+                        <span className="font-bold text-sm">Post New Notice</span>
+                      </button>
+                      <button 
+                        onClick={() => setActiveTab('categories')}
+                        className="w-full flex items-center p-4 bg-white/10 rounded-2xl hover:bg-white/20 transition-all group"
+                      >
+                        <Plus className="w-5 h-5 mr-3 text-emerald-400 group-hover:scale-110 transition-transform" />
+                        <span className="font-bold text-sm">Manage Categories</span>
+                      </button>
+                      <button 
+                        onClick={() => setActiveTab('settings')}
+                        className="w-full flex items-center p-4 bg-white/10 rounded-2xl hover:bg-white/20 transition-all group"
+                      >
+                        <Shield className="w-5 h-5 mr-3 text-emerald-400 group-hover:scale-110 transition-transform" />
+                        <span className="font-bold text-sm">Security Settings</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 shadow-sm">
+                    <h3 className="text-xl font-black text-zinc-900 mb-6">Category Distribution</h3>
+                    <div className="space-y-4">
+                      {analytics?.categoryCounts.map((cat: any) => (
+                        <div key={cat.name} className="space-y-2">
+                          <div className="flex justify-between text-xs font-bold">
+                            <span className="text-zinc-700">{cat.name}</span>
+                            <span className="text-zinc-400">{cat.count} posts</span>
+                          </div>
+                          <div className="h-2 bg-zinc-100 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-emerald-500 rounded-full" 
+                              style={{ width: `${(cat.count / analytics.totalPosts) * 100}%` }}
+                            />
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(activeTab === 'pending' || activeTab === 'approved') && (
+            <div className="bg-white border border-zinc-200 rounded-[2.5rem] overflow-hidden shadow-sm animate-in fade-in slide-in-from-bottom-4">
+              <div className="p-8 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-black text-zinc-900">{activeTab === 'pending' ? 'Pending Review' : 'Approved Content'}</h3>
+                  <p className="text-sm text-zinc-500">Showing {filteredPosts.length} results</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button className="p-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-500 hover:text-emerald-600 transition-all">
+                    <Filter className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="overflow-x-auto no-scrollbar">
+                <table className="w-full text-left">
+                  <thead className="bg-zinc-50 text-zinc-500 text-[10px] uppercase font-black tracking-widest">
+                    <tr>
+                      <th className="px-8 py-4">Content Details</th>
+                      <th className="px-8 py-4">Category</th>
+                      <th className="px-8 py-4">Author</th>
+                      <th className="px-8 py-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-100">
+                    {filteredPosts.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="px-8 py-16 text-center">
+                          <div className="flex flex-col items-center">
+                            <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center text-zinc-300 mb-4">
+                              <FileText className="w-8 h-8" />
+                            </div>
+                            <p className="text-zinc-400 font-bold">No posts found in this section</p>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredPosts.map((post) => (
+                        <tr key={post.id} className="hover:bg-zinc-50 transition-colors group">
+                          <td className="px-8 py-6">
+                            <div className="font-black text-zinc-900 text-base mb-1 line-clamp-1">{post.title}</div>
+                            <div className="text-xs text-zinc-500 line-clamp-1 max-w-md">{post.description.replace(/<[^>]*>/g, '')}</div>
+                            <div className="mt-2 flex items-center text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
+                              <Clock className="w-3 h-3 mr-1" />
+                              {new Date(post.created_at).toLocaleDateString()}
+                            </div>
+                          </td>
+                          <td className="px-8 py-6">
+                            <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wider">
+                              {post.category_name}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-8 h-8 bg-zinc-100 rounded-full flex items-center justify-center text-zinc-400 text-xs font-bold">
+                                {post.submitted_by?.[0] || 'A'}
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold text-zinc-900">{post.submitted_by || 'Anonymous'}</div>
+                                <div className="text-[10px] text-zinc-500">{post.email || 'No email'}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-8 py-6 text-right">
+                            <div className="flex items-center justify-end space-x-2">
+                              {post.status === 'pending' ? (
+                                <button 
+                                  onClick={() => updateStatus(post.id, 'approved')}
+                                  className="p-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
+                                  title="Approve"
+                                >
+                                  <Check className="w-4 h-4" />
+                                </button>
+                              ) : (
+                                <button 
+                                  onClick={() => updateStatus(post.id, 'pending')}
+                                  className="p-3 bg-zinc-900 text-white rounded-xl hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-900/20 active:scale-95"
+                                  title="Move to Pending"
+                                >
+                                  <Clock className="w-4 h-4" />
+                                </button>
+                              )}
+                              <button 
+                                onClick={() => deletePost(post.id)}
+                                className="p-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all active:scale-95"
+                                title="Delete"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'notices' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+              <div className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 shadow-sm">
+                <h3 className="text-xl font-black text-zinc-900 mb-6">Create New Notice</h3>
+                <form onSubmit={createNotice} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-500 uppercase">Description</label>
-                    <input 
-                      value={editingCategory.description}
-                      onChange={e => setEditingCategory({ ...editingCategory, description: e.target.value })}
-                      className="w-full px-4 py-2 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                      placeholder="Short summary..."
+                    <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Notice Content</label>
+                    <textarea 
+                      value={newNotice.content}
+                      onChange={(e) => setNewNotice({ ...newNotice, content: e.target.value })}
+                      placeholder="What should the community know?"
+                      className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                      rows={3}
                     />
                   </div>
-                </div>
-                <button type="submit" className="w-full py-3 bg-zinc-900 text-white rounded-xl font-bold hover:bg-zinc-800 transition-colors">
-                  {editingCategory.id ? 'Update Category' : 'Create Category'}
-                </button>
-              </form>
-            )}
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1 space-y-2">
+                      <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Notice Type</label>
+                      <select 
+                        value={newNotice.type}
+                        onChange={(e) => setNewNotice({ ...newNotice, type: e.target.value as any })}
+                        className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all appearance-none"
+                      >
+                        <option value="info">Information (Blue)</option>
+                        <option value="warning">Important Warning (Amber)</option>
+                        <option value="success">Success / Good News (Emerald)</option>
+                      </select>
+                    </div>
+                    <div className="sm:pt-8">
+                      <button 
+                        type="submit"
+                        className="w-full sm:w-auto px-10 py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-95"
+                      >
+                        Post Community Notice
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categories.map(cat => (
-                <div key={cat.id} className="p-4 bg-white border border-zinc-200 rounded-2xl flex items-center justify-between group">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-zinc-50 rounded-lg flex items-center justify-center text-emerald-600">
-                      {IconMap[cat.icon] || <Info className="w-5 h-5" />}
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {notices.map((notice) => (
+                  <div key={notice.id} className="bg-white border border-zinc-200 rounded-[2.5rem] p-6 shadow-sm flex flex-col justify-between group">
                     <div>
-                      <div className="font-bold text-zinc-900">{cat.name}</div>
-                      <div className="text-xs text-zinc-500">/{cat.slug}</div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={cn(
+                          "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest",
+                          notice.type === 'warning' ? "bg-amber-100 text-amber-700" : 
+                          notice.type === 'success' ? "bg-emerald-100 text-emerald-700" :
+                          "bg-blue-100 text-blue-700"
+                        )}>
+                          {notice.type}
+                        </div>
+                        <span className="text-[10px] text-zinc-400 font-bold">
+                          {new Date(notice.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-zinc-700 font-medium leading-relaxed mb-6">{notice.content}</p>
+                    </div>
+                    <div className="flex items-center justify-between pt-4 border-t border-zinc-50">
+                      <button 
+                        onClick={() => toggleNotice(notice.id)}
+                        className={cn(
+                          "px-4 py-2 rounded-xl text-xs font-black transition-all",
+                          notice.active ? "bg-emerald-50 text-emerald-600" : "bg-zinc-100 text-zinc-400"
+                        )}
+                      >
+                        {notice.active ? 'Visible to All' : 'Hidden'}
+                      </button>
+                      <button 
+                        onClick={() => deleteNotice(notice.id)}
+                        className="p-2 text-red-400 hover:text-red-600 transition-colors"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button 
-                      onClick={() => setEditingCategory(cat)}
-                      className="p-2 text-zinc-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => deleteCategory(cat.id)}
-                      className="p-2 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'categories' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-2xl font-black text-zinc-900">Content Categories</h3>
+                  <p className="text-sm text-zinc-500">Organize and manage how content is grouped</p>
+                </div>
+                <button 
+                  onClick={() => setEditingCategory({ name: '', slug: '', icon: 'FileText', description: '' })}
+                  className="inline-flex items-center px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-95"
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  New Category
+                </button>
+              </div>
+
+              {editingCategory && (
+                <div className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 shadow-xl animate-in zoom-in-95">
+                  <div className="flex justify-between items-center mb-8">
+                    <h4 className="text-xl font-black text-zinc-900">{editingCategory.id ? 'Edit Category' : 'Create New Category'}</h4>
+                    <button onClick={() => setEditingCategory(null)} className="p-2 text-zinc-400 hover:text-zinc-900">
+                      <X className="w-6 h-6" />
                     </button>
                   </div>
+                  <form onSubmit={saveCategory} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Display Name</label>
+                        <input 
+                          value={editingCategory.name}
+                          onChange={e => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                          className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                          placeholder="e.g., Visa Guide"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">URL Slug</label>
+                        <input 
+                          value={editingCategory.slug}
+                          onChange={e => setEditingCategory({ ...editingCategory, slug: e.target.value })}
+                          className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                          placeholder="e.g., visa-guide"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Description</label>
+                      <textarea 
+                        value={editingCategory.description}
+                        onChange={e => setEditingCategory({ ...editingCategory, description: e.target.value })}
+                        className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                        placeholder="What kind of content goes here?"
+                        rows={2}
+                      />
+                    </div>
+                    <div className="flex justify-end space-x-4">
+                      <button 
+                        type="button" 
+                        onClick={() => setEditingCategory(null)}
+                        className="px-8 py-4 text-zinc-500 font-bold hover:text-zinc-900"
+                      >
+                        Cancel
+                      </button>
+                      <button 
+                        type="submit"
+                        className="px-10 py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20"
+                      >
+                        {editingCategory.id ? 'Save Changes' : 'Create Category'}
+                      </button>
+                    </div>
+                  </form>
                 </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase tracking-wider">
-              <tr>
-                <th className="px-6 py-4 font-semibold">Content</th>
-                <th className="px-6 py-4 font-semibold">Category</th>
-                <th className="px-6 py-4 font-semibold">Submitted By</th>
-                <th className="px-6 py-4 font-semibold text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100">
-              {filteredPosts.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-zinc-500">
-                    No {activeTab} posts found.
-                  </td>
-                </tr>
-              ) : (
-                filteredPosts.map((post) => (
-                  <tr key={post.id} className="hover:bg-zinc-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="font-bold text-zinc-900">{post.title}</div>
-                      <div className="text-sm text-zinc-500 line-clamp-1">{post.description}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-3 py-1 bg-zinc-100 text-zinc-600 rounded-full text-xs">
-                        {post.category_name}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-zinc-900">{post.submitted_by || 'Anonymous'}</div>
-                      <div className="text-xs text-zinc-500">{post.email || 'No email'}</div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end space-x-2">
-                        {post.status === 'pending' ? (
-                          <button 
-                            onClick={() => updateStatus(post.id, 'approved')}
-                            className="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all"
-                            title="Approve"
-                          >
-                            <Check className="w-4 h-4" />
-                          </button>
-                        ) : (
-                          <button 
-                            onClick={() => updateStatus(post.id, 'pending')}
-                            className="p-2 bg-zinc-50 text-zinc-600 rounded-lg hover:bg-zinc-900 hover:text-white transition-all"
-                            title="Move to Pending"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        )}
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {categories.map((cat) => (
+                  <div key={cat.id} className="bg-white border border-zinc-200 rounded-[2.5rem] p-6 shadow-sm hover:shadow-md transition-all group">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        {IconMap[cat.icon] || <FileText className="w-6 h-6" />}
+                      </div>
+                      <div className="flex items-center space-x-1">
                         <button 
-                          onClick={() => deletePost(post.id)}
-                          className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all"
-                          title="Delete"
+                          onClick={() => setEditingCategory(cat)}
+                          className="p-2 text-zinc-400 hover:text-emerald-600 transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => deleteCategory(cat.id)}
+                          className="p-2 text-zinc-400 hover:text-red-600 transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                    </div>
+                    <h4 className="text-lg font-black text-zinc-900 mb-1">{cat.name}</h4>
+                    <p className="text-xs text-zinc-500 line-clamp-2 mb-4">{cat.description || 'No description provided.'}</p>
+                    <div className="pt-4 border-t border-zinc-50 flex items-center justify-between">
+                      <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">/{cat.slug}</span>
+                      <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
+                        {posts.filter(p => p.category_id === cat.id).length} Posts
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'moderators' && user.role === 'admin' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+              <div className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 shadow-sm">
+                <h3 className="text-xl font-black text-zinc-900 mb-6">Add New Moderator</h3>
+                <form onSubmit={createModerator} className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Full Name</label>
+                      <input 
+                        value={newModerator.name}
+                        onChange={(e) => setNewModerator({ ...newModerator, name: e.target.value })}
+                        className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                        placeholder="e.g., John Doe"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Username</label>
+                      <input 
+                        value={newModerator.username}
+                        onChange={(e) => setNewModerator({ ...newModerator, username: e.target.value })}
+                        className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                        placeholder="e.g., johndoe"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Password</label>
+                      <input 
+                        type="password"
+                        value={newModerator.password}
+                        onChange={(e) => setNewModerator({ ...newModerator, password: e.target.value })}
+                        className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                        placeholder="********"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <button 
+                    type="submit"
+                    className="w-full py-4 bg-zinc-900 text-white rounded-2xl font-black hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/20 active:scale-95"
+                  >
+                    Create Moderator Account
+                  </button>
+                </form>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {moderators.map((mod) => (
+                  <div key={mod.id} className="bg-white border border-zinc-200 rounded-[2.5rem] p-6 shadow-sm flex items-center justify-between group">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-zinc-100 rounded-2xl flex items-center justify-center text-zinc-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-all">
+                        <User className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="font-black text-zinc-900">{mod.name}</h4>
+                        <p className="text-xs text-zinc-500">@{mod.username}</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => deleteModerator(mod.id)}
+                      className="p-2 text-zinc-300 hover:text-red-600 transition-colors"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'settings' && (
+            <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4">
+              <div className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 shadow-sm">
+                <div className="flex items-center space-x-4 mb-8">
+                  <div className="w-16 h-16 bg-zinc-100 rounded-2xl flex items-center justify-center text-zinc-400">
+                    <Shield className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-zinc-900">Security Settings</h3>
+                    <p className="text-sm text-zinc-500">Update your administrative credentials</p>
+                  </div>
+                </div>
+                
+                <form onSubmit={changePassword} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Current Password</label>
+                    <input 
+                      type="password"
+                      value={passwordForm.currentPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                      className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">New Password</label>
+                      <input 
+                        type="password"
+                        value={passwordForm.newPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                        className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Confirm Password</label>
+                      <input 
+                        type="password"
+                        value={passwordForm.confirmPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                        className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <button 
+                    type="submit"
+                    className="w-full py-5 bg-zinc-900 text-white rounded-2xl font-black hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/20 active:scale-95"
+                  >
+                    Update Security Credentials
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
-        )}
-      </div>
+      </main>
     </div>
   );
 };
@@ -1787,8 +2037,15 @@ export default function App() {
         <footer className="bg-white border-t border-zinc-200 py-12 mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">K</div>
+              <div className="flex items-center space-x-3">
+                <img 
+                  src="/logo.png" 
+                  alt="Logo" 
+                  className="w-10 h-10 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://picsum.photos/seed/community-logo/100/100";
+                  }}
+                />
                 <span className="font-bold text-zinc-900">KDU Community BD</span>
               </div>
               <div className="flex space-x-6 text-sm text-zinc-500">
