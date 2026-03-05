@@ -2075,12 +2075,26 @@ const AdminDashboard = () => {
         await fetchData();
         alert('Selected posts deleted successfully');
       } else {
-        const err = await res.json();
-        alert(err.error || 'Failed to delete posts');
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
+          navigate('/login');
+          return;
+        }
+        
+        let errorMessage = 'Failed to delete posts';
+        try {
+          const err = await res.json();
+          errorMessage = err.error || errorMessage;
+        } catch (e) {
+          // Fallback if not JSON
+          errorMessage = await res.text() || errorMessage;
+        }
+        alert(errorMessage);
       }
     } catch (error) {
       console.error('Bulk delete error:', error);
-      alert('An error occurred while deleting posts');
+      alert('A network error occurred while deleting posts. Please check your connection.');
     } finally {
       setIsDeleting(false);
     }

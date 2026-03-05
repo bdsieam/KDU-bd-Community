@@ -396,10 +396,10 @@ async function startServer() {
   const authenticateToken = (req: any, res: any, next: any) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.sendStatus(401);
+    if (!token) return res.status(401).json({ error: "Authentication required" });
 
     jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
-      if (err) return res.sendStatus(403);
+      if (err) return res.status(403).json({ error: "Invalid or expired token" });
       req.user = user;
       next();
     });
@@ -447,10 +447,15 @@ async function startServer() {
   app.delete("/api/admin/posts/:id", authenticateToken, async (req, res) => {
     const { id } = req.params;
     try {
+      // Manually delete comments first to avoid foreign key issues
+      await pool.query("DELETE FROM comments WHERE post_id = ?", [id]);
+      
+      // Then delete the post
       await pool.query("DELETE FROM posts WHERE id = ?", [id]);
       res.json({ message: "Post deleted successfully" });
     } catch (error) {
-      res.status(500).json({ error: "Failed to delete post" });
+      console.error("Delete post error:", error);
+      res.status(500).json({ error: "Failed to delete post. Database error." });
     }
   });
 
@@ -469,8 +474,14 @@ async function startServer() {
     }
 
     try {
-      // We use the IN (?) syntax which is the most reliable way in mysql2 for arrays
-      await pool.query("DELETE FROM posts WHERE id IN (?)", [validIds]);
+      console.log(`Attempting bulk delete for IDs: ${validIds.join(', ')}`);
+      
+      // Manually delete comments first to avoid foreign key issues if CASCADE is not set up correctly
+      await pool.query("DELETE FROM comments WHERE post_id IN (?)", [validIds]);
+      
+      // Then delete the posts
+      const [result] = await pool.query("DELETE FROM posts WHERE id IN (?)", [validIds]);
+      console.log("Bulk delete result:", result);
       res.json({ message: `${validIds.length} posts deleted successfully` });
     } catch (error: any) {
       console.error("Bulk delete error:", error);
