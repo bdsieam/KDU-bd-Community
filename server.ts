@@ -69,7 +69,9 @@ async function initializeDatabase() {
       "ALTER TABLE posts MODIFY COLUMN description LONGTEXT",
       "ALTER TABLE posts ADD COLUMN IF NOT EXISTS views INT DEFAULT 0",
       "ALTER TABLE posts ADD COLUMN IF NOT EXISTS likes INT DEFAULT 0",
-      "ALTER TABLE posts ADD COLUMN IF NOT EXISTS pdf_url TEXT"
+      "ALTER TABLE posts ADD COLUMN IF NOT EXISTS pdf_url TEXT",
+      "ALTER TABLE comments DROP FOREIGN KEY IF EXISTS comments_ibfk_1",
+      "ALTER TABLE comments ADD CONSTRAINT fk_post_comments FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE"
     ];
 
     for (const sql of migrations) {
@@ -458,13 +460,28 @@ async function startServer() {
     if (!Array.isArray(ids) || ids.length === 0) {
       return res.status(400).json({ error: "No IDs provided" });
     }
+
+    // Ensure all IDs are numbers to prevent SQL issues
+    const validIds = ids.map(id => Number(id)).filter(id => !isNaN(id));
+    
+    if (validIds.length === 0) {
+      return res.status(400).json({ error: "Invalid IDs provided" });
+    }
+
     try {
-      // Use the standard mysql2 way for IN clause with an array
-      await pool.query("DELETE FROM posts WHERE id IN (?)", [ids]);
-      res.json({ message: "Posts deleted successfully" });
-    } catch (error) {
+      // We use the IN (?) syntax which is the most reliable way in mysql2 for arrays
+      await pool.query("DELETE FROM posts WHERE id IN (?)", [validIds]);
+      res.json({ message: `${validIds.length} posts deleted successfully` });
+    } catch (error: any) {
       console.error("Bulk delete error:", error);
-      res.status(500).json({ error: "Failed to delete posts" });
+      // If it fails, it's likely a foreign key constraint issue
+      if (error.code === 'ER_ROW_IS_REFERENCED_2') {
+        res.status(400).json({ 
+          error: "Cannot delete posts because they are referenced by other data. Please run the SQL fix in TiDB Cloud." 
+        });
+      } else {
+        res.status(500).json({ error: "Failed to delete posts. Database error." });
+      }
     }
   });
 
