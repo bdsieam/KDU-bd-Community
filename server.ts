@@ -459,9 +459,8 @@ async function startServer() {
       return res.status(400).json({ error: "No IDs provided" });
     }
     try {
-      // Use a more robust way for bulk delete in TiDB/MySQL
-      const placeholders = ids.map(() => '?').join(',');
-      await pool.query(`DELETE FROM posts WHERE id IN (${placeholders})`, ids);
+      // Use the standard mysql2 way for IN clause with an array
+      await pool.query("DELETE FROM posts WHERE id IN (?)", [ids]);
       res.json({ message: "Posts deleted successfully" });
     } catch (error) {
       console.error("Bulk delete error:", error);
