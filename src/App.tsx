@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams, u
 import { 
   Briefcase, CreditCard, Stethoscope, MapPin, Utensils, 
   Beef, Clock, Smartphone, Bus, GraduationCap, PhoneCall, 
-  Search, Plus, LogIn, Check, X, Trash2, Edit2,
-  ChevronRight, ArrowLeft, Menu, Info, Send,
+  Search, Plus, LogIn, Check, X, Trash2, Edit2, Edit,
+  ChevronRight, ChevronLeft, ArrowLeft, ArrowRight, Menu, Info, Send,
   Home, User, Users, Settings, Mail, Calendar, Camera, Music, Video, Image, Map, 
   Book, Coffee, ShoppingBag, Heart, Star, Shield, Zap, Globe, Cloud, 
   Moon, Sun, Umbrella, Anchor, Award, Bike, Car, Plane, Train, 
@@ -25,7 +25,24 @@ import {
   Bold, Italic, Underline as UnderlineIcon, List as ListIcon, ListOrdered, Quote, Heading1, Heading2, AlignLeft, AlignCenter, AlignRight,
   Bold as BoldIcon, Italic as ItalicIcon, Strikethrough,
   Smile, Frown, Meh, Ghost, Crown, Gem, Flame, Rocket, Hammer, Wrench,
-  Palette, Indent, Outdent
+  Palette, Indent, Outdent, EyeOff, Share2, ExternalLink, MessageSquare, Droplets,
+  Wallet, Banknote, Coins, Calculator, Pill, Syringe, Microscope, Dna, Brain,
+  UserPlus, UserMinus, UserCheck, UserX, Contact, Building, Building2, Store,
+  Warehouse, Factory, School, Library, Church, Tent, TreePine,
+  TreePalm, Trees, Flower, Flower2, Sprout, Leaf, Mountain, Waves,
+  CloudRain, CloudSnow, CloudLightning, CloudDrizzle, CloudFog, CloudSun,
+  CloudMoon, Tornado, Lightbulb, Signal, Disc, FolderPlus,
+  FolderMinus, FolderOpen, FilePlus, FileMinus, FileCheck, FileX,
+  FileSearch, FileCode, ClipboardCheck, ClipboardList, ClipboardCopy,
+  ClipboardEdit, ClipboardX, BookOpen, Bookmark, BookmarkPlus,
+  BookmarkMinus, BookmarkCheck, BookmarkX, Languages, Navigation,
+  Navigation2, Locate, LocateFixed, Crosshair, Medal, Sparkles,
+  PartyPopper, Cake, Receipt, Ticket, Tags, Sliders,
+  SwitchCamera, Volume1, Volume2, VolumeX, StopCircle, Timer,
+  AlarmClock, History as HistoryIcon, Hourglass, Sunrise, Sunset,
+  HeartOff, Skull, Bomb, Sword, ZoomIn, ZoomOut, Move, RotateCcw,
+  RotateCw, RefreshCcw, MessageCircle, MoreHorizontal, MoreVertical,
+  Grid, Columns, Rows, Minus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useForm, Controller } from 'react-hook-form';
@@ -373,118 +390,220 @@ const IconMap: Record<string, React.ReactNode> = {
   Globe: <Globe className="w-full h-full" />,
   Cloud: <Cloud className="w-full h-full" />,
   Moon: <Moon className="w-full h-full" />,
-  Sun: <Sun className="w-full h-full" />,
-  Umbrella: <Umbrella className="w-full h-full" />,
-  Anchor: <Anchor className="w-full h-full" />,
-  Award: <Award className="w-full h-full" />,
-  Bike: <Bike className="w-full h-full" />,
-  Car: <Car className="w-full h-full" />,
-  Plane: <Plane className="w-full h-full" />,
-  Train: <Train className="w-full h-full" />,
-  Truck: <Truck className="w-full h-full" />,
-  Activity: <Activity className="w-full h-full" />,
+  Flag: <Flag className="w-full h-full" />,
+  Bell: <Bell className="w-full h-full" />,
+  Lock: <Lock className="w-full h-full" />,
+  Unlock: <Unlock className="w-full h-full" />,
+  Key: <Key className="w-full h-full" />,
+  Eye: <Eye className="w-full h-full" />,
+  EyeOff: <EyeOff className="w-full h-full" />,
+  Trash2: <Trash2 className="w-full h-full" />,
+  Edit: <Edit className="w-full h-full" />,
+  Plus: <Plus className="w-full h-full" />,
+  Minus: <Minus className="w-full h-full" />,
+  Check: <Check className="w-full h-full" />,
+  X: <X className="w-full h-full" />,
+  ArrowLeft: <ArrowLeft className="w-full h-full" />,
+  ArrowRight: <ArrowRight className="w-full h-full" />,
+  ChevronLeft: <ChevronLeft className="w-full h-full" />,
+  ChevronRight: <ChevronRight className="w-full h-full" />,
+  Search: <Search className="w-full h-full" />,
+  Filter: <Filter className="w-full h-full" />,
+  Download: <Download className="w-full h-full" />,
+  Upload: <Upload className="w-full h-full" />,
+  Share2: <Share2 className="w-full h-full" />,
+  ExternalLink: <ExternalLink className="w-full h-full" />,
+  Link: <LucideLink className="w-full h-full" />,
+  Info: <Info className="w-full h-full" />,
+  HelpCircle: <HelpCircle className="w-full h-full" />,
   AlertCircle: <AlertCircle className="w-full h-full" />,
   AlertTriangle: <AlertTriangle className="w-full h-full" />,
-  Archive: <Archive className="w-full h-full" />,
-  AtSign: <AtSign className="w-full h-full" />,
-  BarChart: <BarChart className="w-full h-full" />,
-  Battery: <Battery className="w-full h-full" />,
-  Bluetooth: <Bluetooth className="w-full h-full" />,
-  Box: <Box className="w-full h-full" />,
-  CameraOff: <CameraOff className="w-full h-full" />,
-  Cast: <Cast className="w-full h-full" />,
   CheckCircle: <CheckCircle className="w-full h-full" />,
-  Clipboard: <Clipboard className="w-full h-full" />,
-  Code: <Code className="w-full h-full" />,
+  MessageSquare: <MessageSquare className="w-full h-full" />,
+  ThumbsUp: <ThumbsUp className="w-full h-full" />,
+  ThumbsDown: <ThumbsDown className="w-full h-full" />,
+  Sun: <Sun className="w-full h-full" />,
+  Wind: <Wind className="w-full h-full" />,
+  Droplets: <Droplets className="w-full h-full" />,
+  Flame: <Flame className="w-full h-full" />,
   Compass: <Compass className="w-full h-full" />,
+  Anchor: <Anchor className="w-full h-full" />,
+  Truck: <Truck className="w-full h-full" />,
+  Plane: <Plane className="w-full h-full" />,
+  Train: <Train className="w-full h-full" />,
+  Car: <Car className="w-full h-full" />,
+  Bicycle: <Bike className="w-full h-full" />,
+  Activity: <Activity className="w-full h-full" />,
+  Award: <Award className="w-full h-full" />,
+  BarChart: <BarChart className="w-full h-full" />,
+  PieChart: <PieChart className="w-full h-full" />,
+  TrendingUp: <TrendingUp className="w-full h-full" />,
   Cpu: <Cpu className="w-full h-full" />,
   Database: <Database className="w-full h-full" />,
-  DollarSign: <DollarSign className="w-full h-full" />,
-  Download: <Download className="w-full h-full" />,
-  Droplet: <Droplet className="w-full h-full" />,
-  Eye: <Eye className="w-full h-full" />,
-  Facebook: <Facebook className="w-full h-full" />,
-  FastForward: <FastForward className="w-full h-full" />,
-  Feather: <Feather className="w-full h-full" />,
-  File: <File className="w-full h-full" />,
-  Filter: <Filter className="w-full h-full" />,
-  Flag: <Flag className="w-full h-full" />,
-  Folder: <Folder className="w-full h-full" />,
-  Gift: <Gift className="w-full h-full" />,
-  Github: <Github className="w-full h-full" />,
   HardDrive: <HardDrive className="w-full h-full" />,
-  Hash: <Hash className="w-full h-full" />,
-  Headphones: <Headphones className="w-full h-full" />,
-  HelpCircle: <HelpCircle className="w-full h-full" />,
-  Inbox: <Inbox className="w-full h-full" />,
-  Instagram: <Instagram className="w-full h-full" />,
-  Key: <Key className="w-full h-full" />,
-  Laptop: <Laptop className="w-full h-full" />,
-  Layers: <Layers className="w-full h-full" />,
-  LifeBuoy: <LifeBuoy className="w-full h-full" />,
-  Link: <LucideLink className="w-full h-full" />,
-  Linkedin: <Linkedin className="w-full h-full" />,
-  List: <List className="w-full h-full" />,
-  Lock: <Lock className="w-full h-full" />,
-  Maximize: <Maximize className="w-full h-full" />,
-  Mic: <Mic className="w-full h-full" />,
-  Minimize: <Minimize className="w-full h-full" />,
-  Monitor: <Monitor className="w-full h-full" />,
-  MousePointer: <MousePointer className="w-full h-full" />,
-  Package: <Package className="w-full h-full" />,
-  Paperclip: <Paperclip className="w-full h-full" />,
-  Pause: <Pause className="w-full h-full" />,
-  PenTool: <PenTool className="w-full h-full" />,
-  Percent: <Percent className="w-full h-full" />,
-  PieChart: <PieChart className="w-full h-full" />,
-  Play: <Play className="w-full h-full" />,
-  Power: <Power className="w-full h-full" />,
-  Printer: <Printer className="w-full h-full" />,
-  Radio: <Radio className="w-full h-full" />,
-  RefreshCw: <RefreshCw className="w-full h-full" />,
-  Repeat: <Repeat className="w-full h-full" />,
-  Rewind: <Rewind className="w-full h-full" />,
-  Save: <Save className="w-full h-full" />,
-  Scissors: <Scissors className="w-full h-full" />,
-  Server: <Server className="w-full h-full" />,
-  Share: <Share className="w-full h-full" />,
-  ShoppingCart: <ShoppingCart className="w-full h-full" />,
-  Shuffle: <Shuffle className="w-full h-full" />,
-  SkipBack: <SkipBack className="w-full h-full" />,
-  SkipForward: <SkipForward className="w-full h-full" />,
-  Slack: <Slack className="w-full h-full" />,
-  Speaker: <Speaker className="w-full h-full" />,
-  Square: <Square className="w-full h-full" />,
-  Tablet: <Tablet className="w-full h-full" />,
-  Tag: <Tag className="w-full h-full" />,
-  Target: <Target className="w-full h-full" />,
-  Terminal: <Terminal className="w-full h-full" />,
-  Thermometer: <Thermometer className="w-full h-full" />,
-  ThumbsDown: <ThumbsDown className="w-full h-full" />,
-  ThumbsUp: <ThumbsUp className="w-full h-full" />,
-  ToggleLeft: <ToggleLeft className="w-full h-full" />,
-  ToggleRight: <ToggleRight className="w-full h-full" />,
-  Trash: <Trash className="w-full h-full" />,
-  TrendingDown: <TrendingDown className="w-full h-full" />,
-  TrendingUp: <TrendingUp className="w-full h-full" />,
-  Tv: <Tv className="w-full h-full" />,
-  Twitter: <Twitter className="w-full h-full" />,
-  Type: <Type className="w-full h-full" />,
-  Unlock: <Unlock className="w-full h-full" />,
-  Upload: <Upload className="w-full h-full" />,
-  VideoOff: <VideoOff className="w-full h-full" />,
-  Volume: <Volume className="w-full h-full" />,
-  Watch: <Watch className="w-full h-full" />,
   Wifi: <Wifi className="w-full h-full" />,
-  Wind: <Wind className="w-full h-full" />,
-  Youtube: <Youtube className="w-full h-full" />,
+  Bluetooth: <Bluetooth className="w-full h-full" />,
+  Battery: <Battery className="w-full h-full" />,
+  Gift: <Gift className="w-full h-full" />,
+  Package: <Package className="w-full h-full" />,
+  Target: <Target className="w-full h-full" />,
   Smile: <Smile className="w-full h-full" />,
   Frown: <Frown className="w-full h-full" />,
   Meh: <Meh className="w-full h-full" />,
   Ghost: <Ghost className="w-full h-full" />,
+  LifeBuoy: <LifeBuoy className="w-full h-full" />,
+  Umbrella: <Umbrella className="w-full h-full" />,
+  Palette: <Palette className="w-full h-full" />,
+  Brush: <PenTool className="w-full h-full" />,
+  Scissors: <Scissors className="w-full h-full" />,
+  PenTool: <PenTool className="w-full h-full" />,
+  Type: <Type className="w-full h-full" />,
+  Bold: <Bold className="w-full h-full" />,
+  Italic: <Italic className="w-full h-full" />,
+  Underline: <UnderlineIcon className="w-full h-full" />,
+  List: <List className="w-full h-full" />,
+  ListOrdered: <ListOrdered className="w-full h-full" />,
+  AlignLeft: <AlignLeft className="w-full h-full" />,
+  AlignCenter: <AlignCenter className="w-full h-full" />,
+  AlignRight: <AlignRight className="w-full h-full" />,
+  Code: <Code className="w-full h-full" />,
+  Terminal: <Terminal className="w-full h-full" />,
+  Monitor: <Monitor className="w-full h-full" />,
+  Laptop: <Laptop className="w-full h-full" />,
+  Tablet: <Tablet className="w-full h-full" />,
+  Tv: <Tv className="w-full h-full" />,
+  Speaker: <Speaker className="w-full h-full" />,
+  Mic: <Mic className="w-full h-full" />,
+  Headphones: <Headphones className="w-full h-full" />,
+  Radio: <Radio className="w-full h-full" />,
+  Cast: <Cast className="w-full h-full" />,
+  Facebook: <Facebook className="w-full h-full" />,
+  Instagram: <Instagram className="w-full h-full" />,
+  Twitter: <Twitter className="w-full h-full" />,
+  Youtube: <Youtube className="w-full h-full" />,
+  Github: <Github className="w-full h-full" />,
+  Linkedin: <Linkedin className="w-full h-full" />,
+  Slack: <Slack className="w-full h-full" />,
+  Hash: <Hash className="w-full h-full" />,
+  AtSign: <AtSign className="w-full h-full" />,
+  DollarSign: <DollarSign className="w-full h-full" />,
+  Wallet: <Wallet className="w-full h-full" />,
+  Banknote: <Banknote className="w-full h-full" />,
+  Coins: <Coins className="w-full h-full" />,
+  Calculator: <Calculator className="w-full h-full" />,
+  TrendingDown: <TrendingDown className="w-full h-full" />,
+  Thermometer: <Thermometer className="w-full h-full" />,
+  Pill: <Pill className="w-full h-full" />,
+  Syringe: <Syringe className="w-full h-full" />,
+  Microscope: <Microscope className="w-full h-full" />,
+  Dna: <Dna className="w-full h-full" />,
+  Brain: <Brain className="w-full h-full" />,
+  Users: <Users className="w-full h-full" />,
+  UserPlus: <UserPlus className="w-full h-full" />,
+  UserMinus: <UserMinus className="w-full h-full" />,
+  UserCheck: <UserCheck className="w-full h-full" />,
+  UserX: <UserX className="w-full h-full" />,
+  Contact: <Contact className="w-full h-full" />,
+  Building: <Building className="w-full h-full" />,
+  Building2: <Building2 className="w-full h-full" />,
+  Store: <Store className="w-full h-full" />,
+  Warehouse: <Warehouse className="w-full h-full" />,
+  Factory: <Factory className="w-full h-full" />,
+  School: <School className="w-full h-full" />,
+  Library: <Library className="w-full h-full" />,
+  Church: <Church className="w-full h-full" />,
+  Graveyard: <Skull className="w-full h-full" />,
+  Tent: <Tent className="w-full h-full" />,
+  TreePine: <TreePine className="w-full h-full" />,
+  TreePalm: <TreePalm className="w-full h-full" />,
+  Trees: <Trees className="w-full h-full" />,
+  Flower: <Flower className="w-full h-full" />,
+  Flower2: <Flower2 className="w-full h-full" />,
+  Sprout: <Sprout className="w-full h-full" />,
+  Leaf: <Leaf className="w-full h-full" />,
+  Mountain: <Mountain className="w-full h-full" />,
+  Waves: <Waves className="w-full h-full" />,
+  CloudRain: <CloudRain className="w-full h-full" />,
+  CloudSnow: <CloudSnow className="w-full h-full" />,
+  CloudLightning: <CloudLightning className="w-full h-full" />,
+  CloudDrizzle: <CloudDrizzle className="w-full h-full" />,
+  CloudFog: <CloudFog className="w-full h-full" />,
+  CloudSun: <CloudSun className="w-full h-full" />,
+  CloudMoon: <CloudMoon className="w-full h-full" />,
+  Tornado: <Tornado className="w-full h-full" />,
+  Hurricane: <Wind className="w-full h-full" />,
+  Droplet: <Droplet className="w-full h-full" />,
+  Lightbulb: <Lightbulb className="w-full h-full" />,
+  Power: <Power className="w-full h-full" />,
+  Signal: <Signal className="w-full h-full" />,
+  Disc: <Disc className="w-full h-full" />,
+  FolderPlus: <FolderPlus className="w-full h-full" />,
+  FolderMinus: <FolderMinus className="w-full h-full" />,
+  FolderOpen: <FolderOpen className="w-full h-full" />,
+  FilePlus: <FilePlus className="w-full h-full" />,
+  FileMinus: <FileMinus className="w-full h-full" />,
+  FileCheck: <FileCheck className="w-full h-full" />,
+  FileX: <FileX className="w-full h-full" />,
+  FileSearch: <FileSearch className="w-full h-full" />,
+  FileCode: <FileCode className="w-full h-full" />,
+  Archive: <Archive className="w-full h-full" />,
+  Box: <Box className="w-full h-full" />,
+  Clipboard: <Clipboard className="w-full h-full" />,
+  ClipboardCheck: <ClipboardCheck className="w-full h-full" />,
+  ClipboardList: <ClipboardList className="w-full h-full" />,
+  ClipboardCopy: <ClipboardCopy className="w-full h-full" />,
+  ClipboardEdit: <ClipboardEdit className="w-full h-full" />,
+  ClipboardX: <ClipboardX className="w-full h-full" />,
+  BookOpen: <BookOpen className="w-full h-full" />,
+  Bookmark: <Bookmark className="w-full h-full" />,
+  BookmarkPlus: <BookmarkPlus className="w-full h-full" />,
+  BookmarkMinus: <BookmarkMinus className="w-full h-full" />,
+  BookmarkCheck: <BookmarkCheck className="w-full h-full" />,
+  BookmarkX: <BookmarkX className="w-full h-full" />,
+  Languages: <Languages className="w-full h-full" />,
+  Navigation: <Navigation className="w-full h-full" />,
+  Navigation2: <Navigation2 className="w-full h-full" />,
+  Locate: <Locate className="w-full h-full" />,
+  LocateFixed: <LocateFixed className="w-full h-full" />,
+  Crosshair: <Crosshair className="w-full h-full" />,
+  Medal: <Medal className="w-full h-full" />,
+  Sparkles: <Sparkles className="w-full h-full" />,
+  PartyPopper: <PartyPopper className="w-full h-full" />,
+  Cake: <Cake className="w-full h-full" />,
+  Receipt: <Receipt className="w-full h-full" />,
+  Ticket: <Ticket className="w-full h-full" />,
+  Tags: <Tags className="w-full h-full" />,
+  Sliders: <Sliders className="w-full h-full" />,
+  Toggles: <Sliders className="w-full h-full" />,
+  SwitchCamera: <SwitchCamera className="w-full h-full" />,
+  Volume1: <Volume1 className="w-full h-full" />,
+  Volume2: <Volume2 className="w-full h-full" />,
+  VolumeX: <VolumeX className="w-full h-full" />,
+  StopCircle: <StopCircle className="w-full h-full" />,
+  Timer: <Timer className="w-full h-full" />,
+  AlarmClock: <AlarmClock className="w-full h-full" />,
+  History: <HistoryIcon className="w-full h-full" />,
+  Hourglass: <Hourglass className="w-full h-full" />,
+  Sunrise: <Sunrise className="w-full h-full" />,
+  Sunset: <Sunset className="w-full h-full" />,
+  HeartOff: <HeartOff className="w-full h-full" />,
+  Skull: <Skull className="w-full h-full" />,
+  Bomb: <Bomb className="w-full h-full" />,
+  Sword: <Sword className="w-full h-full" />,
+  ZoomIn: <ZoomIn className="w-full h-full" />,
+  ZoomOut: <ZoomOut className="w-full h-full" />,
+  Move: <Move className="w-full h-full" />,
+  RotateCcw: <RotateCcw className="w-full h-full" />,
+  RotateCw: <RotateCw className="w-full h-full" />,
+  RefreshCcw: <RefreshCcw className="w-full h-full" />,
+  MessageCircle: <MessageCircle className="w-full h-full" />,
+  MoreHorizontal: <MoreHorizontal className="w-full h-full" />,
+  MoreVertical: <MoreVertical className="w-full h-full" />,
+  Grid: <Grid className="w-full h-full" />,
+  Columns: <Columns className="w-full h-full" />,
+  Rows: <Rows className="w-full h-full" />,
   Crown: <Crown className="w-full h-full" />,
   Gem: <Gem className="w-full h-full" />,
-  Flame: <Flame className="w-full h-full" />,
   Rocket: <Rocket className="w-full h-full" />,
   Hammer: <Hammer className="w-full h-full" />,
   Wrench: <Wrench className="w-full h-full" />,
@@ -1562,18 +1681,145 @@ const AdminLogin = () => {
   );
 };
 
+const EditPostModal = ({ post, categories, onSave, onClose }: { post: Post, categories: Category[], onSave: (data: any) => void, onClose: () => void }) => {
+  const { register, handleSubmit, control, formState: { errors } } = useForm({
+    defaultValues: {
+      ...post,
+      category_id: post.category_id.toString()
+    }
+  });
+
+  return (
+    <div className="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+      >
+        <div className="p-8 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
+          <div>
+            <h3 className="text-2xl font-black text-zinc-900">Edit Post</h3>
+            <p className="text-sm text-zinc-500">Modify post details and content</p>
+          </div>
+          <button onClick={onClose} className="p-3 bg-white border border-zinc-200 rounded-2xl text-zinc-400 hover:text-zinc-900 transition-all shadow-sm">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit(onSave)} className="flex-1 overflow-y-auto p-8 space-y-6 no-scrollbar">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Title</label>
+              <input 
+                {...register('title', { required: true })}
+                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Category</label>
+              <select 
+                {...register('category_id', { required: true })}
+                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all appearance-none"
+              >
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Description</label>
+            <Controller
+              name="description"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <RichTextEditor 
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Update post content..."
+                />
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Location</label>
+              <input 
+                {...register('location')}
+                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Contact</label>
+              <input 
+                {...register('contact')}
+                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Map Link</label>
+            <input 
+              {...register('map_link')}
+              className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Image URL</label>
+              <input 
+                {...register('image_url')}
+                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">PDF URL</label>
+              <input 
+                {...register('pdf_url')}
+                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+              />
+            </div>
+          </div>
+        </form>
+
+        <div className="p-8 bg-zinc-50 border-t border-zinc-100 flex items-center justify-end space-x-4">
+          <button 
+            onClick={onClose}
+            className="px-8 py-4 bg-white border border-zinc-200 text-zinc-600 rounded-2xl font-black hover:bg-zinc-100 transition-all"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={handleSubmit(onSave)}
+            className="px-10 py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20"
+          >
+            Save Changes
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 const AdminDashboard = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [notices, setNotices] = useState<Notice[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [moderators, setModerators] = useState<any[]>([]);
+  const [comments, setComments] = useState<any[]>([]);
   const [analytics, setAnalytics] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'pending' | 'approved' | 'notices' | 'categories' | 'moderators' | 'settings' | 'bulk-manage'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'pending' | 'approved' | 'notices' | 'categories' | 'moderators' | 'settings' | 'bulk-manage' | 'comments'>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPostIds, setSelectedPostIds] = useState<number[]>([]);
   const [selectedBulkCategoryId, setSelectedBulkCategoryId] = useState<number | null>(null);
   const [previewPost, setPreviewPost] = useState<Post | null>(null);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
   
   const [newNotice, setNewNotice] = useState({ content: '', type: 'info' });
   const [editingCategory, setEditingCategory] = useState<Partial<Category> | null>(null);
@@ -1598,7 +1844,8 @@ const AdminDashboard = () => {
         fetch('/api/admin/posts', { headers }),
         fetch('/api/admin/analytics', { headers }),
         fetch('/api/admin/notices', { headers }),
-        fetch('/api/categories')
+        fetch('/api/categories'),
+        fetch('/api/admin/comments', { headers })
       ];
 
       if (user.role === 'admin') {
@@ -1618,8 +1865,9 @@ const AdminDashboard = () => {
       setAnalytics(await responses[1].json());
       setNotices(await responses[2].json());
       setCategories(await responses[3].json());
-      if (user.role === 'admin' && responses[4]) {
-        setModerators(await responses[4].json());
+      setComments(await responses[4].json());
+      if (user.role === 'admin' && responses[5]) {
+        setModerators(await responses[5].json());
       }
     } catch (error) {
       console.error('Error fetching admin data:', error);
@@ -1636,6 +1884,25 @@ const AdminDashboard = () => {
       body: JSON.stringify({ status })
     });
     if (res.ok) fetchData();
+  };
+
+  const savePost = async (data: any) => {
+    if (!editingPost) return;
+    const res = await fetch(`/api/admin/posts/${editingPost.id}`, {
+      method: 'PATCH',
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      setEditingPost(null);
+      fetchData();
+    } else {
+      const err = await res.json();
+      alert(err.error || 'Failed to save post');
+    }
   };
 
   const deletePost = async (id: number) => {
@@ -1681,9 +1948,18 @@ const AdminDashboard = () => {
     if (res.ok) fetchData();
   };
 
+  const deleteComment = async (id: number) => {
+    if (!confirm('Delete this comment?')) return;
+    const res = await fetch(`/api/admin/comments/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.ok) fetchData();
+  };
+
   const saveCategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingCategory?.name || !editingCategory?.slug) return;
+    if (!editingCategory?.name) return;
     
     const method = editingCategory.id ? 'PATCH' : 'POST';
     const url = editingCategory.id ? `/api/admin/categories/${editingCategory.id}` : '/api/admin/categories';
@@ -1809,6 +2085,7 @@ const AdminDashboard = () => {
     { id: 'approved', label: 'Approved Content', icon: CheckCircle },
     { id: 'notices', label: 'Community Notices', icon: Bell, count: notices.length },
     { id: 'bulk-manage', label: 'Bulk Manage', icon: List },
+    { id: 'comments', label: 'Comments', icon: MessageSquare },
     { id: 'categories', label: 'Categories', icon: FolderTree },
     ...(user.role === 'admin' ? [{ id: 'moderators', label: 'Moderators', icon: Users }] : []),
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -2008,6 +2285,15 @@ const AdminDashboard = () => {
               </div>
             </motion.div>
           </div>
+        )}
+
+        {editingPost && (
+          <EditPostModal 
+            post={editingPost}
+            categories={categories}
+            onSave={savePost}
+            onClose={() => setEditingPost(null)}
+          />
         )}
       </AnimatePresence>
 
@@ -2319,6 +2605,13 @@ const AdminDashboard = () => {
                                 </button>
                               )}
                               <button 
+                                onClick={() => setEditingPost(post)}
+                                className="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all active:scale-95"
+                                title="Edit"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button 
                                 onClick={() => deletePost(post.id)}
                                 className="p-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all active:scale-95"
                                 title="Delete"
@@ -2545,10 +2838,19 @@ const AdminDashboard = () => {
                                     </p>
                                   </button>
                                 </div>
-                                <div className="text-[10px] text-zinc-400 font-bold">
-                                  {new Date(post.created_at).toLocaleDateString()}
+                                  <div className="flex items-center space-x-2">
+                                    <button 
+                                      onClick={() => setEditingPost(post)}
+                                      className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all"
+                                      title="Edit"
+                                    >
+                                      <Edit className="w-3 h-3" />
+                                    </button>
+                                    <div className="text-[10px] text-zinc-400 font-bold">
+                                      {new Date(post.created_at).toLocaleDateString()}
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
                             ))
                           )}
                         </div>
@@ -2585,26 +2887,35 @@ const AdminDashboard = () => {
                     </button>
                   </div>
                   <form onSubmit={saveCategory} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Display Name</label>
-                        <input 
-                          value={editingCategory.name}
-                          onChange={e => setEditingCategory({ ...editingCategory, name: e.target.value })}
-                          className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-                          placeholder="e.g., Visa Guide"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">URL Slug</label>
-                        <input 
-                          value={editingCategory.slug}
-                          onChange={e => setEditingCategory({ ...editingCategory, slug: e.target.value })}
-                          className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-                          placeholder="e.g., visa-guide"
-                          required
-                        />
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Display Name</label>
+                      <input 
+                        value={editingCategory.name}
+                        onChange={e => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                        className="w-full px-6 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                        placeholder="e.g., Visa Guide"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Icon Selection</label>
+                      <div className="grid grid-cols-6 sm:grid-cols-10 gap-2 max-h-48 overflow-y-auto p-4 bg-zinc-50 border border-zinc-200 rounded-2xl no-scrollbar">
+                        {Object.keys(IconMap).map(iconName => (
+                          <button
+                            key={iconName}
+                            type="button"
+                            onClick={() => setEditingCategory({ ...editingCategory, icon: iconName })}
+                            className={cn(
+                              "w-10 h-10 flex items-center justify-center rounded-xl transition-all",
+                              editingCategory.icon === iconName ? "bg-emerald-600 text-white shadow-lg" : "bg-white text-zinc-400 hover:text-emerald-600 hover:bg-emerald-50"
+                            )}
+                            title={iconName}
+                          >
+                            <div className="w-5 h-5">
+                              {IconMap[iconName]}
+                            </div>
+                          </button>
+                        ))}
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -2668,6 +2979,54 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'comments' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+              <div className="bg-white border border-zinc-200 rounded-[2.5rem] overflow-hidden shadow-sm">
+                <div className="p-8 border-b border-zinc-100">
+                  <h3 className="text-xl font-black text-zinc-900">Manage Comments</h3>
+                  <p className="text-sm text-zinc-500">Review and moderate community discussions</p>
+                </div>
+                <div className="divide-y divide-zinc-100">
+                  {comments.length === 0 ? (
+                    <div className="p-16 text-center text-zinc-400 font-bold">No comments found</div>
+                  ) : (
+                    comments.map((comment) => (
+                      <div key={comment.id} className="p-6 hover:bg-zinc-50 transition-colors flex items-start justify-between group">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-10 h-10 bg-zinc-100 rounded-xl flex items-center justify-center text-zinc-400 font-bold shrink-0">
+                            {comment.author_name?.[0] || 'A'}
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2 mb-1">
+                              <span className="font-black text-zinc-900">{comment.author_name}</span>
+                              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
+                                {new Date(comment.created_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <p className="text-sm text-zinc-600 mb-2">{comment.content}</p>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">On Post:</span>
+                              <span className="text-[10px] text-emerald-600 font-black uppercase tracking-widest truncate max-w-[200px]">
+                                {posts.find(p => p.id === comment.post_id)?.title || 'Unknown Post'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => deleteComment(comment.id)}
+                          className="p-3 text-zinc-300 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                          title="Delete Comment"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           )}

@@ -418,23 +418,25 @@ async function startServer() {
     }
   });
 
-  // Admin: Update Post Status
+  // Admin: Update Post Status or Details
   app.patch("/api/admin/posts/:id", authenticateToken, async (req, res) => {
     const { id } = req.params;
-    const { status, title, description, location, contact, map_link } = req.body;
+    const { status, title, description, location, contact, map_link, category_id, image_url, pdf_url } = req.body;
     
     try {
-      if (status) {
+      if (status && Object.keys(req.body).length === 1) {
         await pool.query("UPDATE posts SET status = ? WHERE id = ?", [status, id]);
       } else {
         await pool.query(`
           UPDATE posts 
-          SET title = ?, description = ?, location = ?, contact = ?, map_link = ? 
+          SET title = ?, description = ?, location = ?, contact = ?, map_link = ?, 
+              category_id = ?, image_url = ?, pdf_url = ?
           WHERE id = ?
-        `, [title, description, location, contact, map_link, id]);
+        `, [title, description, location, contact, map_link, category_id, image_url, pdf_url, id]);
       }
       res.json({ message: "Post updated successfully" });
     } catch (error) {
+      console.error("Update error:", error);
       res.status(500).json({ error: "Failed to update post" });
     }
   });
@@ -457,9 +459,12 @@ async function startServer() {
       return res.status(400).json({ error: "No IDs provided" });
     }
     try {
-      await pool.query("DELETE FROM posts WHERE id IN (?)", [ids]);
+      // Use a more robust way for bulk delete in TiDB/MySQL
+      const placeholders = ids.map(() => '?').join(',');
+      await pool.query(`DELETE FROM posts WHERE id IN (${placeholders})`, ids);
       res.json({ message: "Posts deleted successfully" });
     } catch (error) {
+      console.error("Bulk delete error:", error);
       res.status(500).json({ error: "Failed to delete posts" });
     }
   });
@@ -530,7 +535,10 @@ async function startServer() {
 
   // Admin: Create Category
   app.post("/api/admin/categories", authenticateToken, async (req, res) => {
-    const { name, slug, icon, description } = req.body;
+    let { name, slug, icon, description } = req.body;
+    if (!slug) {
+      slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
     try {
       await pool.query("INSERT INTO categories (name, slug, icon, description) VALUES (?, ?, ?, ?)", [name, slug, icon, description]);
       res.status(201).json({ message: "Category created successfully" });
