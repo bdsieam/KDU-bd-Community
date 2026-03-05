@@ -1818,6 +1818,7 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPostIds, setSelectedPostIds] = useState<number[]>([]);
   const [selectedBulkCategoryId, setSelectedBulkCategoryId] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [previewPost, setPreviewPost] = useState<Post | null>(null);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   
@@ -1836,6 +1837,10 @@ const AdminDashboard = () => {
     }
     fetchData();
   }, [token]);
+
+  useEffect(() => {
+    setSelectedPostIds([]);
+  }, [activeTab]);
 
   const fetchData = async () => {
     const headers = { 'Authorization': `Bearer ${token}` };
@@ -2054,21 +2059,30 @@ const AdminDashboard = () => {
     if (selectedPostIds.length === 0) return;
     if (!confirm(`Are you sure you want to delete ${selectedPostIds.length} selected posts?`)) return;
     
-    const res = await fetch('/api/admin/posts/bulk-delete', {
-      method: 'POST',
-      headers: { 
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ ids: selectedPostIds })
-    });
-    
-    if (res.ok) {
-      setSelectedPostIds([]);
-      fetchData();
-    } else {
-      const err = await res.json();
-      alert(err.error || 'Failed to delete posts');
+    setIsDeleting(true);
+    try {
+      const res = await fetch('/api/admin/posts/bulk-delete', {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ids: selectedPostIds })
+      });
+      
+      if (res.ok) {
+        setSelectedPostIds([]);
+        await fetchData();
+        alert('Selected posts deleted successfully');
+      } else {
+        const err = await res.json();
+        alert(err.error || 'Failed to delete posts');
+      }
+    } catch (error) {
+      console.error('Bulk delete error:', error);
+      alert('An error occurred while deleting posts');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -2732,19 +2746,49 @@ const AdminDashboard = () => {
                     </p>
                   </div>
                 </div>
-                {selectedPostIds.length > 0 && (
-                  <button 
-                    onClick={bulkDeletePosts}
-                    className="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-2xl font-black hover:bg-red-700 transition-all shadow-xl shadow-red-600/20 active:scale-95"
-                  >
-                    <Trash2 className="w-5 h-5 mr-2" />
-                    Delete Selected ({selectedPostIds.length})
-                  </button>
-                )}
+                <div className="flex items-center space-x-4">
+                  {selectedPostIds.length > 0 && (
+                    <button 
+                      onClick={() => setSelectedPostIds([])}
+                      className="px-4 py-2 text-xs font-bold text-zinc-500 hover:text-red-600 transition-colors"
+                    >
+                      Clear Selection
+                    </button>
+                  )}
+                  {selectedPostIds.length > 0 && (
+                    <button 
+                      onClick={bulkDeletePosts}
+                      disabled={isDeleting}
+                      className={cn(
+                        "inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-2xl font-black transition-all shadow-xl shadow-red-600/20 active:scale-95",
+                        isDeleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-700"
+                      )}
+                    >
+                      {isDeleting ? (
+                        <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-5 h-5 mr-2" />
+                      )}
+                      {isDeleting ? 'Deleting...' : `Delete Selected (${selectedPostIds.length})`}
+                    </button>
+                  )}
+                </div>
               </div>
 
               {!selectedBulkCategoryId ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="space-y-6">
+                  <div className="flex justify-end">
+                    <button 
+                      onClick={() => {
+                        const allIds = posts.map(p => p.id);
+                        setSelectedPostIds(allIds);
+                      }}
+                      className="text-xs font-bold text-emerald-600 hover:underline"
+                    >
+                      Select All Posts in All Categories
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {categories.map(category => {
                     const count = posts.filter(p => p.category_id === category.id).length;
                     return (
@@ -2765,7 +2809,8 @@ const AdminDashboard = () => {
                     );
                   })}
                 </div>
-              ) : (
+              </div>
+            ) : (
                 <div className="space-y-8">
                   {(() => {
                     const category = categories.find(c => c.id === selectedBulkCategoryId);
@@ -3160,6 +3205,54 @@ const AdminDashboard = () => {
           )}
         </div>
       </main>
+
+      {/* Floating Bulk Actions Bar */}
+      <AnimatePresence>
+        {selectedPostIds.length > 0 && (
+          <motion.div 
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-4"
+          >
+            <div className="bg-zinc-900 text-white rounded-[2rem] p-4 shadow-2xl shadow-zinc-900/40 flex items-center justify-between border border-white/10 backdrop-blur-xl">
+              <div className="flex items-center space-x-4 ml-4">
+                <div className="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center font-black">
+                  {selectedPostIds.length}
+                </div>
+                <div>
+                  <p className="font-black text-sm">Posts Selected</p>
+                  <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Bulk Actions Available</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <button 
+                  onClick={() => setSelectedPostIds([])}
+                  className="px-6 py-3 text-sm font-bold text-zinc-400 hover:text-white transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={bulkDeletePosts}
+                  disabled={isDeleting}
+                  className={cn(
+                    "flex items-center px-8 py-3 bg-red-600 text-white rounded-2xl font-black transition-all active:scale-95",
+                    isDeleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-700"
+                  )}
+                >
+                  {isDeleting ? (
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4 mr-2" />
+                  )}
+                  {isDeleting ? 'Deleting...' : 'Delete Selected'}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
