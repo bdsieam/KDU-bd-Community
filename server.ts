@@ -3,12 +3,16 @@ import { createServer as createViteServer } from "vite";
 import mysql from "mysql2/promise";
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
 import multer from "multer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const JWT_SECRET = process.env.JWT_SECRET || "kdu-community-secret-key";
 
@@ -708,8 +712,8 @@ async function startServer() {
     });
   }
 
-  const PORT = 3000;
-  app.listen(PORT, "0.0.0.0", () => {
+  const PORT = process.env.PORT || 3000;
+  app.listen(Number(PORT), "0.0.0.0", () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);
   });
 }
